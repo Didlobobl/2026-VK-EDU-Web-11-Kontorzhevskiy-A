@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ru" class="h-100">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AskPupkin - Вопросы и Ответы</title>
+    <link rel="stylesheet" href="static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="static/css/style.css">
+    <link rel="shortcut icon" href="static/img/favicon.ico" type="image/x-icon">
+</head>
+<body class="d-flex flex-column h-100 bg-light">
+
+    <header class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top mb-4">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="index.html">AskPupkin</a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarContent">
+
+                <form class="d-flex mx-auto w-50 my-2 my-lg-0">
+                    <input class="form-control me-2" type="search" placeholder="Поиск по вопросам..." aria-label="Search">
+                    <button class="btn btn-outline-success" type="submit">Найти</button>
+                </form>
+
+                <div class="d-flex align-items-center text-white">
+                    <img src="static/img/avatar-placeholder.png" alt="Avatar" class="rounded-circle me-2" width="40" height="40">
+                    <div class="me-3">
+                        <div class="fw-bold">Dr. House</div>
+                        <a href="profile.html" class="text-white-50 text-decoration-none small">Настройки</a>
+                    </div>
+                    <a href="login.html" class="btn btn-outline-light btn-sm me-2">Выход</a>
+                    <a href="ask.html" class="btn btn-primary btn-sm">Задать вопрос</a>
+                </div>
+
+                <!-- Юзерблок -->
+                <!-- 
+                <div class="ms-lg-3">
+                    <a href="login.html" class="btn btn-outline-light me-2">Войти</a>
+                    <a href="signup.html" class="btn btn-success">Регистрация</a>
+                </div> 
+                -->
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-shrink-0">
+        <div class="container">
+            <div class="row">
+                
+                <div class="col-lg-9 mb-4">
+                    <h2 class="mb-4">Новые вопросы</h2>
+                    
+                    <div class="alert alert-info">
+                        Здесь будет список вопросов (верстка для index.html)
+                    </div>
+                </div>
+
+                <aside class="col-lg-3">
+                    <div class="card mb-4 shadow-sm">
+                        <div class="card-header bg-white">
+                            <h5 class="card-title mb-0">Популярные теги</h5>
+                        </div>
+                        <div class="card-body">
+                            <a href="#" class="badge bg-secondary text-decoration-none mb-1">python</a>
+                            <a href="#" class="badge bg-secondary text-decoration-none mb-1">django</a>
+                            <a href="#" class="badge bg-secondary text-decoration-none mb-1">javascript</a>
+                            <a href="#" class="badge bg-secondary text-decoration-none mb-1">bootstrap</a>
+                            <a href="#" class="badge bg-secondary text-decoration-none mb-1">mysql</a>
+                            <a href="#" class="badge bg-secondary text-decoration-none mb-1">html</a>
+                            <a href="#" class="badge bg-secondary text-decoration-none mb-1">css</a>
+                            <a href="#" class="badge bg-secondary text-decoration-none mb-1">gunicorn</a>
+                        </div>
+                    </div>
+
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-white">
+                            <h5 class="card-title mb-0">Лучшие пользователи</h5>
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <a href="#" class="text-decoration-none">Ivanov</a>
+                                <span class="badge bg-primary rounded-pill">1240</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <a href="#" class="text-decoration-none">Petrov</a>
+                                <span class="badge bg-primary rounded-pill">950</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <a href="#" class="text-decoration-none">Sidorov</a>
+                                <span class="badge bg-primary rounded-pill">820</span>
+                            </li>
+                        </ul>
+                    </div>
+                </aside>
+
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer mt-auto py-3 bg-white border-top">
+        <div class="container text-center">
+            <span class="text-muted">© 2026 AskPupkin. VK Education Web Project.</span>
+        </div>
+    </footer>
+
+    <script src="static/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
