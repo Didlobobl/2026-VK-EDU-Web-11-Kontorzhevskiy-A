@@ -60,36 +60,6 @@
                     </div>
                 </div>
 
-                <div class="card mb-4 shadow-sm">
-                    <div class="card-body">
-                        <div class="row">
-                            <!-- Лайки и Аватар -->
-                            <div class="col-md-2 text-center border-end">
-                                <img src="static/img/avatar-placeholder.png" alt="Avatar" class="img-fluid rounded mb-2" style="max-width: 64px;">
-                                <div class="d-flex flex-column align-items-center">
-                                    <button class="btn btn-outline-success btn-sm mb-1">+</button>
-                                    <span class="fw-bold">5</span>
-                                    <button class="btn btn-outline-danger btn-sm">-</button>
-                                </div>
-                            </div>
-                            <!-- Контент вопроса -->
-                            <div class="col-md-10">
-                                <h4 class="card-title"><a href="question.html" class="text-decoration-none">Как центрировать div в 2024 году?</a></h4>
-                                <p class="card-text text-truncate">Я перепробовал всё: margin: auto, flexbox, grid, но мой div всё равно убегает в угол...</p>
-                                <div class="d-flex justify-content-between align-items-center mt-3">
-                                    <div>
-                                        <a href="#" class="badge bg-info text-dark text-decoration-none">css</a>
-                                        <a href="#" class="badge bg-info text-dark text-decoration-none">html</a>
-                                    </div>
-                                    <div class="small text-muted">
-                                        <a href="question.html" class="me-3 text-decoration-none">Ответы (3)</a>
-                                        <span>2 часа назад</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
                  <div class="card mb-4 shadow-sm">
                     <div class="card-body">
                         <div class="row">
@@ -104,37 +74,7 @@
                             </div>
                             <!-- Контент вопроса -->
                             <div class="col-md-10">
-                                <h4 class="card-title"><a href="question.html" class="text-decoration-none">Как центрировать div в 2024 году?</a></h4>
-                                <p class="card-text text-truncate">Я перепробовал всё: margin: auto, flexbox, grid, но мой div всё равно убегает в угол...</p>
-                                <div class="d-flex justify-content-between align-items-center mt-3">
-                                    <div>
-                                        <a href="#" class="badge bg-info text-dark text-decoration-none">css</a>
-                                        <a href="#" class="badge bg-info text-dark text-decoration-none">html</a>
-                                    </div>
-                                    <div class="small text-muted">
-                                        <a href="question.html" class="me-3 text-decoration-none">Ответы (3)</a>
-                                        <span>2 часа назад</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                 <div class="card mb-4 shadow-sm">
-                    <div class="card-body">
-                        <div class="row">
-                            <!-- Лайки и Аватар -->
-                            <div class="col-md-2 text-center border-end">
-                                <img src="static/img/avatar-placeholder.png" alt="Avatar" class="img-fluid rounded mb-2" style="max-width: 64px;">
-                                <div class="d-flex flex-column align-items-center">
-                                    <button class="btn btn-outline-success btn-sm mb-1">+</button>
-                                    <span class="fw-bold">5</span>
-                                    <button class="btn btn-outline-danger btn-sm">-</button>
-                                </div>
-                            </div>
-                            <!-- Контент вопроса -->
-                            <div class="col-md-10">
-                                <h4 class="card-title"><a href="question.html" class="text-decoration-none">Как центрировать div в 2024 году?</a></h4>
+                                <h4 class="card-title"><a  href="{% url 'question' question_id=question.id %}" class="text-decoration-none">Как центрировать div в 2024 году?</a></h4>
                                 <p class="card-text text-truncate">Я перепробовал всё: margin: auto, flexbox, grid, но мой div всё равно убегает в угол...</p>
                                 <div class="d-flex justify-content-between align-items-center mt-3">
                                     <div>
