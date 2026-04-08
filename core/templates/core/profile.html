@@ -59,7 +59,7 @@
 
                 <div class="col-md-4 text-center">
                     <p class="fw-semibold">Текущий аватар:</p>
-                    <img src="{% if user.avatar %}{{ user.avatar.url }}{% else %}{% static 'img/avatar-placeholder.png' %}{% endif %}"
+                    <img src="{% if user.avatar %}{{ user.avatar.url }}{% else %}{% static 'core/img/avatar-placeholder.png' %}{% endif %}"
                          alt="Avatar"
                          class="img-thumbnail rounded mb-2"
                          style="width: 150px;">
