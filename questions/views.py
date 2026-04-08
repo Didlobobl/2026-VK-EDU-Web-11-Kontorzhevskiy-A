@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from core.utils import paginate 
 
 QUESTIONS = [
     {
@@ -21,7 +22,12 @@ ANSWERS = [
 
 
 def index(request):
-    return render(request, 'questions/index.html', {'questions': QUESTIONS})
+    all_questions = [{'id': i, 'title': f'Вопрос {i}', 'text': 'Очень интересный вопрос'} for i in range(1, 101)]
+    page_obj = paginate(all_questions, request, per_page=10)
+    return render(request, 'questions/index.html', {
+        'questions': page_obj.object_list,
+        'page_obj': page_obj,
+    })
 
 def hot(request):
     hot_questions = sorted(QUESTIONS, key=lambda x: x['likes'], reverse=True)

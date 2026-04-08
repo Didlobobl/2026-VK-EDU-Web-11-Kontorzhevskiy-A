@@ -11,14 +11,13 @@
                 <h3 class="mb-0">Вход в аккаунт</h3>
             </div>
             <div class="card-body">
-                {# Если позже добавите обработку ошибок – сюда можно выводить общие сообщения #}
                 {% if form_errors %}
                     <div class="alert alert-danger" role="alert">
                         Неверный логин или пароль. Пожалуйста, попробуйте снова.
                     </div>
                 {% endif %}
 
-                <form method="post" action="{% url 'login' %}" novalidate>
+                <form method="post" action="{% url 'core:login' %}" novalidate>
                     {% csrf_token %}
 
                     {# Поле "Логин" (можно использовать email или username) #}
@@ -37,7 +36,6 @@
                         </div>
                     </div>
 
-                    {# Поле "Пароль" #}
                     <div class="mb-3">
                         <label for="id_password" class="form-label fw-semibold">Пароль</label>
                         <input type="password"
@@ -51,15 +49,13 @@
                         </div>
                     </div>
 
-                    {# Кнопка отправки #}
                     <div class="d-grid gap-2 mb-3">
                         <button type="submit" class="btn btn-primary btn-lg">Войти</button>
                     </div>
 
-                    {# Ссылка на регистрацию #}
                     <div class="text-center">
                         <span class="text-muted">Нет аккаунта?</span>
-                        <a href="{% url 'signup' %}" class="text-decoration-none">Зарегистрируйтесь</a>
+                        <a href="{% url 'core:signup' %}" class="text-decoration-none">Зарегистрируйтесь</a>
                     </div>
                 </form>
             </div>

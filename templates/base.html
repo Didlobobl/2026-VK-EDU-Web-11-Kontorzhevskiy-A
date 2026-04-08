@@ -7,6 +7,7 @@
     <title>{% block title %}AskPupkin{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'questions/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'questions/css/style.css' %}">
+    <link rel="shortcut icon" href="{% static 'questions/img/favicon.ico' %}" type="image/x-icon">
 </head>
 <body class="d-flex flex-column h-100 bg-light">
 
@@ -21,7 +22,7 @@
 
                 <div class="d-flex align-items-center text-white">
                     <img src="{% static 'questions/img/avatar-placeholder.png' %}" class="rounded-circle me-2" width="40">
-                    <a href="{% url 'core:profile_edit' %}" class="text-white me-3 text-decoration-none small">Dr. House</a>
+                    <a href="{% url 'core:profile' %}" class="text-white me-3 text-decoration-none small">Dr. House</a>
                     <a href="{% url 'core:login' %}" class="btn btn-outline-light btn-sm me-2">Выход</a>
                     <a href="{% url 'questions:ask' %}" class="btn btn-primary btn-sm">Задать вопрос</a>
                 </div>
@@ -44,10 +45,23 @@
                             <a href="{% url 'questions:tag' tag_name='django' %}" class="badge bg-secondary text-decoration-none">django</a>
                         </div>
                     </div>
-                    <div class="card shadow-sm">
-                        <div class="card-header bg-white"><h5>Лучшие пользователи</h5></div>
+                     <div class="card shadow-sm">
+                        <div class="card-header bg-white">
+                            <h5 class="card-title mb-0">Лучшие пользователи</h5>
+                        </div>
                         <ul class="list-group list-group-flush">
-                            <li class="list-group-item">Ivanov <span class="badge bg-primary float-end">120</span></li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <a href="#" class="text-decoration-none">Mr. Freeman</a>
+                                <span class="badge bg-primary rounded-pill">1240</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <a href="#" class="text-decoration-none">Dr.House</a>
+                                <span class="badge bg-primary rounded-pill">950</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <a href="#" class="text-decoration-none">V.Pupkin</a>
+                                <span class="badge bg-primary rounded-pill">820</span>
+                            </li>
                         </ul>
                     </div>
                 </aside>
@@ -56,7 +70,7 @@
     </main>
 
     <footer class="footer mt-auto py-3 bg-white border-top text-center">
-        <span class="text-muted">© 2024 AskPupkin. VK Education.</span>
+        <span class="text-muted">© 2026 AskPupkin. VK Education.</span>
     </footer>
 
     <script src="{% static 'questions/js/bootstrap.bundle.min.js' %}"></script>

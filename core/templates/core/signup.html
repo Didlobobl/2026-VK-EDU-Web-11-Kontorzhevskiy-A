@@ -11,17 +11,15 @@
                 <h3 class="mb-0">Регистрация</h3>
             </div>
             <div class="card-body">
-                {# Блок для отображения общих ошибок формы (например, не совпадают пароли) #}
                 {% if form_errors %}
                     <div class="alert alert-danger" role="alert">
                         Пожалуйста, исправьте ошибки в форме.
                     </div>
                 {% endif %}
 
-                <form method="post" action="{% url 'signup' %}" enctype="multipart/form-data" novalidate>
+                <form method="post" action="{% url 'core:signup' %}" enctype="multipart/form-data" novalidate>
                     {% csrf_token %}
 
-                    {# Поле Email #}
                     <div class="mb-3">
                         <label for="id_email" class="form-label fw-semibold">Email</label>
                         <input type="email"
@@ -34,7 +32,6 @@
                         <div class="invalid-feedback">Введите корректный email.</div>
                     </div>
 
-                    {# Поле Никнейм #}
                     <div class="mb-3">
                         <label for="id_username" class="form-label fw-semibold">Никнейм</label>
                         <input type="text"
@@ -46,7 +43,6 @@
                         <div class="form-text">Будет отображаться рядом с вашими вопросами и ответами.</div>
                     </div>
 
-                    {# Поле Пароль #}
                     <div class="mb-3">
                         <label for="id_password" class="form-label fw-semibold">Пароль</label>
                         <input type="password"
@@ -80,7 +76,7 @@
 
                     <div class="text-center mt-3">
                         <span class="text-muted">Уже есть аккаунт?</span>
-                        <a href="{% url 'login' %}" class="text-decoration-none">Войти</a>
+                        <a href="{% url 'core:login' %}" class="text-decoration-none">Войти</a>
                     </div>
                 </form>
             </div>
