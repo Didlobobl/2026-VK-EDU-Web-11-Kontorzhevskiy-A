@@ -1,0 +1,29 @@
+{% load static %}
+<div class="card mb-4 shadow-sm">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-2 text-center border-end">
+                <img src="{% static 'questions/img/avatar-placeholder.png' %}" class="img-fluid rounded mb-2" style="max-width: 64px;">
+                <div class="d-flex flex-column align-items-center">
+                    <button class="btn btn-outline-success btn-sm">+</button>
+                    <span class="fw-bold">{{ question.likes }}</span>
+                    <button class="btn btn-outline-danger btn-sm">-</button>
+                </div>
+            </div>
+            <div class="col-md-10">
+                <h4><a href="{% url 'questions:question' question_id=question.id %}" class="text-decoration-none">{{ question.title }}</a></h4>
+                <p class="card-text">{{ question.content|truncatechars:150 }}</p>
+                <div class="d-flex justify-content-between mt-3">
+                    <div>
+                        {% for tag in question.tags %}
+                            <a href="{% url 'questions:tag' tag_name=tag %}" class="badge bg-info text-dark text-decoration-none">{{ tag }}</a>
+                        {% endfor %}
+                    </div>
+                    <div class="small text-muted">
+                        Ответы ({{ question.answers_count }})
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
