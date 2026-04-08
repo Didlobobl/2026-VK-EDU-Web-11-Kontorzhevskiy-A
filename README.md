@@ -38,7 +38,7 @@
 |----------|-----|-------------------------------|
 | Главная (новые вопросы) | `/` | `questions:index` |
 | Лучшие вопросы | `/hot/` | `questions:hot` |
-| Вопросы по тегу | `/tag/<slug:tag_name>/` | `questions:tag` |
+| Вопросы по тегу | `/tag/<str:tag_name>/` | `questions:tag` |
 | Страница вопроса | `/question/<int:question_id>/` | `questions:question` |
 | Добавить вопрос | `/ask/` | `questions:ask` |
 | Вход | `/accounts/login/` | `core:login` |
