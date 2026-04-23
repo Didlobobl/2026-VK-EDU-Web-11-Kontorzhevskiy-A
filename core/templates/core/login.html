@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Вход — AskPupkin{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white text-center">
+                <h3 class="mb-0">Вход в аккаунт</h3>
+            </div>
+            <div class="card-body">
+                {% if form_errors %}
+                    <div class="alert alert-danger" role="alert">
+                        Неверный логин или пароль. Пожалуйста, попробуйте снова.
+                    </div>
+                {% endif %}
+
+                <form method="post" action="{% url 'core:login' %}" novalidate>
+                    {% csrf_token %}
+
+                    {# Поле "Логин" (можно использовать email или username) #}
+                    <div class="mb-3">
+                        <label for="id_username" class="form-label fw-semibold">Логин или email</label>
+                        <input type="text"
+                               name="username"
+                               id="id_username"
+                               class="form-control"
+                               placeholder="Введите ваш логин или email"
+                               required
+                               autofocus>
+                        <div class="form-text">Введите данные, указанные при регистрации.</div>
+                        <div class="invalid-feedback">
+                            Пожалуйста, введите логин.
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="id_password" class="form-label fw-semibold">Пароль</label>
+                        <input type="password"
+                               name="password"
+                               id="id_password"
+                               class="form-control"
+                               placeholder="Ваш пароль"
+                               required>
+                        <div class="invalid-feedback">
+                            Введите пароль.
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2 mb-3">
+                        <button type="submit" class="btn btn-primary btn-lg">Войти</button>
+                    </div>
+
+                    <div class="text-center">
+                        <span class="text-muted">Нет аккаунта?</span>
+                        <a href="{% url 'core:signup' %}" class="text-decoration-none">Зарегистрируйтесь</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

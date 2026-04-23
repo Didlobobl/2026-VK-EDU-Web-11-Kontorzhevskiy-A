@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Настройки профиля — AskPupkin{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-9">
+        <h2 class="mb-4">Настройки профиля: {{ user.username|default:"Пользователь" }}</h2>
+
+        <form method="post" action="{% url 'core:profile' %}" enctype="multipart/form-data" novalidate>
+            {% csrf_token %}
+
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="mb-3">
+                        <label for="id_username" class="form-label fw-semibold">Логин</label>
+                        <input type="text"
+                               name="username"
+                               id="id_username"
+                               class="form-control"
+                               value="{{ user.username|default:'dr_house' }}"
+                               required>
+                        <div class="form-text">Ваш уникальный идентификатор.</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="id_email" class="form-label fw-semibold">Email</label>
+                        <input type="email"
+                               name="email"
+                               id="id_email"
+                               class="form-control"
+                               value="{{ user.email|default:'house@vicodin.com' }}"
+                               required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="id_nickname" class="form-label fw-semibold">Никнейм</label>
+                        <input type="text"
+                               name="nickname"
+                               id="id_nickname"
+                               class="form-control"
+                               value="{{ user.first_name|default:'Gregory' }}">
+                        <div class="form-text">Как вас будут видеть другие пользователи.</div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="id_avatar" class="form-label fw-semibold">Загрузить новый аватар</label>
+                        <input type="file"
+                               name="avatar"
+                               id="id_avatar"
+                               class="form-control"
+                               accept="image/*">
+                        <div class="form-text">Поддерживаются JPG, PNG, GIF. Не более 5 МБ.</div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+                </div>
+
+                <div class="col-md-4 text-center">
+                    <p class="fw-semibold">Текущий аватар:</p>
+                    <img src="{% if user.avatar %}{{ user.avatar.url }}{% else %}{% static 'core/img/avatar-placeholder.png' %}{% endif %}"
+                         alt="Avatar"
+                         class="img-thumbnail rounded mb-2"
+                         style="width: 150px;">
+                </div>
+            </div>
+        </form>
+    </div>
+
+</div>
+{% endblock %}

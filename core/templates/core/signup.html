@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Регистрация — AskPupkin{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white text-center">
+                <h3 class="mb-0">Регистрация</h3>
+            </div>
+            <div class="card-body">
+                {% if form_errors %}
+                    <div class="alert alert-danger" role="alert">
+                        Пожалуйста, исправьте ошибки в форме.
+                    </div>
+                {% endif %}
+
+                <form method="post" action="{% url 'core:signup' %}" enctype="multipart/form-data" novalidate>
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label for="id_email" class="form-label fw-semibold">Email</label>
+                        <input type="email"
+                               name="email"
+                               id="id_email"
+                               class="form-control"
+                               placeholder="ivanov@mail.ru"
+                               required>
+                        <div class="form-text">Введите действующий email, он будет использоваться для входа.</div>
+                        <div class="invalid-feedback">Введите корректный email.</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="id_username" class="form-label fw-semibold">Никнейм</label>
+                        <input type="text"
+                               name="username"
+                               id="id_username"
+                               class="form-control"
+                               placeholder="Ваш уникальный ник"
+                               required>
+                        <div class="form-text">Будет отображаться рядом с вашими вопросами и ответами.</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="id_password" class="form-label fw-semibold">Пароль</label>
+                        <input type="password"
+                               name="password"
+                               id="id_password"
+                               class="form-control"
+                               required>
+                        <div class="form-text">Минимум 8 символов.</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="id_password2" class="form-label fw-semibold">Повторите пароль</label>
+                        <input type="password"
+                               name="password2"
+                               id="id_password2"
+                               class="form-control"
+                               required>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="id_avatar" class="form-label fw-semibold">Аватар</label>
+                        <input type="file"
+                               name="avatar"
+                               id="id_avatar"
+                               class="form-control"
+                               accept="image/*">
+                        <div class="form-text">Необязательно. Рекомендуем квадратное изображение.</div>
+                    </div>
+
+                    <button type="submit" class="btn btn-success w-100">Создать аккаунт</button>
+
+                    <div class="text-center mt-3">
+                        <span class="text-muted">Уже есть аккаунт?</span>
+                        <a href="{% url 'core:login' %}" class="text-decoration-none">Войти</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

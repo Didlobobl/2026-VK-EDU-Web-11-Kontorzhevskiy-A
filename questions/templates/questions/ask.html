@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Задать вопрос — AskPupkin{% endblock %}
+
+{% block content %}
+<div class="card shadow-sm">
+    <div class="card-header bg-white">
+        <h2 class="h4 mb-0">Задать новый вопрос</h2>
+    </div>
+    <div class="card-body">
+        <form method="post" action="{% url 'questions:ask' %}" novalidate>
+            {% csrf_token %}
+
+            <div class="mb-3">
+                <label for="id_title" class="form-label fw-semibold">Заголовок</label>
+                <input type="text"
+                       name="title"
+                       id="id_title"
+                       class="form-control"
+                       placeholder="Например: Как настроить Django для работы с PostgreSQL?"
+                       maxlength="200"
+                       required>
+                <div class="form-text">Кратко опишите суть вопроса (не более 200 символов).</div>
+                <div class="invalid-feedback">
+                    Пожалуйста, введите заголовок (от 10 до 200 символов).
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="id_text" class="form-label fw-semibold">Содержание</label>
+                <textarea name="text"
+                          id="id_text"
+                          rows="6"
+                          class="form-control"
+                          placeholder="Подробно опишите проблему, приложите код, ошибки, что уже попробовали..."
+                          required></textarea>
+                <div class="form-text">Используйте Markdown для форматирования. Минимум 30 символов.</div>
+            </div>
+
+            <div class="mb-4">
+                <label for="id_tags" class="form-label fw-semibold">Теги</label>
+                <input type="text"
+                       name="tags"
+                       id="id_tags"
+                       class="form-control"
+                       placeholder="python, django, postgresql"
+                       value=""
+                       maxlength="100">
+                <div class="form-text">Укажите от 1 до 3 тегов через запятую. Теги должны быть короткими и отражать суть вопроса.</div>
+                <div class="invalid-feedback">
+                    Можно использовать только буквы, цифры и дефис. Максимум 3 тега.
+                </div>
+            </div>
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary">Опубликовать вопрос</button>
+                <a href="{% url 'questions:index' %}" class="btn btn-outline-secondary">Отмена</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+{# Блок для отображения общих ошибок формы (если будут) #}
+{% if form_errors %}
+<div class="alert alert-danger mt-3" role="alert">
+    <strong>Ошибка!</strong> Пожалуйста, исправьте выделенные поля.
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Новые вопросы</h2>
+        <div>
+            <a href="{% url 'questions:index' %}" class="btn btn-sm btn-link text-dark fw-bold">Новые</a>
+            <a href="{% url 'questions:hot_questions' %}" class="btn btn-sm btn-link text-muted">Популярные</a>
+        </div>
+    </div>
+
+    {% for q in questions %}
+        {% include 'questions/components/question_item.html' with question=q %}
+    {% endfor %}
+
+    {% include 'questions/components/pagination.html' %}
+{% endblock %}
