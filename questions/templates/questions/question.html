@@ -8,7 +8,7 @@
         <div class="card-body">
             <div class="row">
                 <div class="col-md-2 text-center">
-                    <img src="{% if question.avatar %}{{ question.avatar }}{% else %}{% static 'img/avatar-placeholder.png' %}{% endif %}"
+                    <img src="{% if question.avatar %}{{ question.avatar }}{% else %}{% static 'questions/img/avatar-placeholder.png' %}{% endif %}"
                          alt="Avatar" class="img-fluid rounded mb-2" style="max-width: 80px;">
                     <div class="fw-bold mt-1">{{ question.rating }}</div>
                     <div class="mt-2">
@@ -39,7 +39,7 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-2 text-center">
-                        <img src="{% if answer.avatar %}{{ answer.avatar }}{% else %}{% static 'img/avatar-placeholder.png' %}{% endif %}"
+                        <img src="{% if answer.avatar %}{{ answer.avatar }}{% else %}{% static 'questions/img/avatar-placeholder.png' %}{% endif %}"
                              alt="Avatar" class="img-fluid rounded mb-1" style="max-width: 50px;">
                         <div class="small fw-bold">{{ answer.author }}</div>
                         <div class="small text-muted">{{ answer.rating }}</div>
