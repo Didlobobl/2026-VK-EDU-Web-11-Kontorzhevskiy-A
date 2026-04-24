@@ -67,3 +67,16 @@ class AnswerLike(models.Model):
 
     class Meta:
         unique_together = ('user', 'answer')
+
+class QuestionManager(models.Manager):
+    def get_with_related(self):
+        return self.select_related('author').prefetch_related('tags')
+
+    def new_questions(self):
+        return self.get_with_related().order_by('-created_at')
+
+    def hot_questions(self):
+        return self.get_with_related().annotate(count_likes=Count('likes')).order_by('-count_likes')
+
+    def by_tag(self, tag_name):
+        return self.get_with_related().filter(tags__name=tag_name)

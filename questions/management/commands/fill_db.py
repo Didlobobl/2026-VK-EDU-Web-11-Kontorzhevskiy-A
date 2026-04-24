@@ -9,7 +9,7 @@ fake = Faker()
 
 class Command(BaseCommand):
     help = 'Заполнение базы данных тестовыми данными'
-
+    Tag.objects.get_or_create(name='python')
     def add_arguments(self, parser):
         parser.add_argument('ratio', type=int, help='Коэффициент заполнения')
 

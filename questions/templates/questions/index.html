@@ -10,9 +10,13 @@
         </div>
     </div>
 
-    {% for q in questions %}
-        {% include 'questions/components/question_item.html' with question=q %}
-    {% endfor %}
+   {% for q in questions %}
+    {% include 'questions/components/question_item.html' with question=q %}
+{% empty %}
+    <div class="alert alert-warning">
+        Пока нет ни одного вопроса. Будьте первым, кто его задаст!
+    </div>
+{% endfor %}
 
-    {% include 'questions/components/pagination.html' %}
+    {% include 'questions/components/pagination.html' with page_obj=questions %}
 {% endblock %}

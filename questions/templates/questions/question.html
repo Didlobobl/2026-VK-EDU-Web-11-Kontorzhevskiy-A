@@ -20,7 +20,7 @@
                     <h2>{{ question.title }}</h2>
                     <p>{{ question.text|linebreaksbr }}</p>
                     <div class="mb-2">
-                        {% for tag in question.tags %}
+                        {% for tag in question.tags.all %}
                             <a href="{% url 'questions:tag' tag_name=tag %}" class="badge bg-info text-dark text-decoration-none me-1">#{{ tag }}</a>
                         {% endfor %}
                     </div>
@@ -43,7 +43,6 @@
                              alt="Avatar" class="img-fluid rounded mb-1" style="max-width: 50px;">
                         <div class="small fw-bold">{{ answer.author }}</div>
                         <div class="small text-muted">{{ answer.rating }}</div>
-                        {# Виджет лайков для ответа #}
                         <div class="mt-1">
                             <button class="btn btn-sm btn-outline-success like-btn" data-id="{{ answer.id }}" data-type="answer">+</button>
                             <button class="btn btn-sm btn-outline-danger dislike-btn" data-id="{{ answer.id }}" data-type="answer">-</button>
