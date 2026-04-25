@@ -41,27 +41,31 @@
                     <div class="card mb-4 shadow-sm">
                         <div class="card-header bg-white"><h5>Популярные теги</h5></div>
                         <div class="card-body">
-                            <a href="{% url 'questions:tag' tag_name='python' %}" class="badge bg-secondary text-decoration-none">python</a>
-                            <a href="{% url 'questions:tag' tag_name='django' %}" class="badge bg-secondary text-decoration-none">django</a>
+                            {% for tag in popular_tags %}
+                                <a href="{% url 'questions:tag' tag_name=tag.name %}" 
+                                class="badge bg-secondary text-decoration-none mb-1">
+                                {{ tag.name }}
+                                </a>
+                            {% empty %}
+                                <span class="text-muted small">Тегов пока нет</span>
+                            {% endfor %}
                         </div>
                     </div>
-                     <div class="card shadow-sm">
+
+                    <!-- Лучшие пользователи -->
+                    <div class="card shadow-sm">
                         <div class="card-header bg-white">
                             <h5 class="card-title mb-0">Лучшие пользователи</h5>
                         </div>
                         <ul class="list-group list-group-flush">
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <a href="#" class="text-decoration-none">Mr. Freeman</a>
-                                <span class="badge bg-primary rounded-pill">1240</span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <a href="#" class="text-decoration-none">Dr.House</a>
-                                <span class="badge bg-primary rounded-pill">950</span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <a href="#" class="text-decoration-none">V.Pupkin</a>
-                                <span class="badge bg-primary rounded-pill">820</span>
-                            </li>
+                            {% for member in best_members %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <a href="#" class="text-decoration-none">{{ member.username }}</a>
+                                    <span class="badge bg-primary rounded-pill">{{ member.q_count }}</span>
+                                </li>
+                            {% empty %}
+                                <li class="list-group-item text-muted small">Пользователей пока нет</li>
+                            {% endfor %}
                         </ul>
                     </div>
                 </aside>
