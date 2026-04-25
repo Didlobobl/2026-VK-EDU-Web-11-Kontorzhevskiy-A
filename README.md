@@ -24,33 +24,37 @@
 git clone <ссылка_на_ваш_репозиторий>
 cd 2026-VK-EDU-Web-11-Kontorzhevskiy-A
 cp .env.example .env.docker
-
+```
 Убедитесь, что внутри .env.docker параметр DB_HOST установлен в значение db.
 
-2. Запуск через Docker Compose
+### 2. Запуск через Docker Compose
 
 Для того чтобы Docker корректно подхватил настройки, используйте флаг
 --env-file:
 
-# Сборка и запуск всех сервисов (в фоновом режиме)
+Сборка и запуск всех сервисов (в фоновом режиме)
+```
 docker compose --env-file .env.docker up --build -d
-
-# Выполнение миграций (создание таблиц в PostgreSQL)
+```
+Выполнение миграций (создание таблиц в PostgreSQL)
+```
 docker compose --env-file .env.docker exec web python manage.py migrate
-
-# Создание администратора (для входа в админ-панель /admin/)
+```
+Создание администратора (для входа в админ-панель /admin/)
+```
 docker compose --env-file .env.docker exec web python manage.py createsuperuser
-
-3. Наполнение базы тестовыми данными
+```
+### 3. Наполнение базы тестовыми данными
 
 Для генерации "рыбы" используется кастомная команда fill_db. Она поддерживает
 bulk_create для обеспечения высокой скорости вставки данных.
 
-# Формат: python manage.py fill_db <ratio>
-# Пример для создания 100 пользователей, 1000 вопросов и 10 000 ответов:
+Формат: python manage.py fill_db <ratio>
+Пример для создания 100 пользователей, 1000 вопросов и 10 000 ответов:
+```
 docker compose --env-file .env.docker exec web python manage.py fill_db 100
-
-Оптимизация и контроль качества
+```
+## Оптимизация и контроль качества
 
   - N+1 Query Detection: В проекте настроен Django Debug Toolbar. Если
     DEBUG=True, справа отображается панель, где можно проверить количество
@@ -61,7 +65,7 @@ docker compose --env-file .env.docker exec web python manage.py fill_db 100
   - Состояние пустоты: Для всех списков проработаны сценарии {% empty %} на
     случай отсутствия данных в БД.
 
-Список основных маршрутов (Namespaces)
+## Список основных маршрутов (Namespaces)
 
 | Страница               | URL                  | Имя маршрута                 |
 | :--------------------- | :------------------- | :--------------------------- |
@@ -73,7 +77,7 @@ docker compose --env-file .env.docker exec web python manage.py fill_db 100
 | **Вход / Регистрация** | `/accounts/...`      | `core:login` / `core:signup` |
 | **Настройки профиля**  | `/accounts/profile/` | `core:profile`               |
 
-Структура проекта
+## Структура проекта
 
   - application/ — Настройки проекта (settings.py, urls.py).
   - core/ — Приложение для работы с пользователями (модель Profile).
