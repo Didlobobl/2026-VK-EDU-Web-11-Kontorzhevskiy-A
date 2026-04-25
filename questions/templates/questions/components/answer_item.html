@@ -1,0 +1,27 @@
+{% load static %}
+<div class="card mb-3 {% if answer.is_correct %}border-success shadow-sm{% endif %}">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-1 text-center">
+                <!-- Аватар автора ответа -->
+                <img src="{% static 'questions/img/avatar-placeholder.png' %}" class="img-fluid rounded" style="max-width: 40px;">
+            </div>
+            <div class="col-md-11">
+                <p class="mb-1">{{ answer.text }}</p>
+                
+                <div class="d-flex justify-content-between align-items-center mt-2">
+                    <div class="small text-muted">
+                        Ответил: <strong>{{ answer.author.username }}</strong> | {{ answer.created_at|date:"d.m.Y" }}
+                    </div>
+                    
+                    <div>
+                        {% if answer.is_correct %}
+                            <span class="badge bg-success">Правильный ответ</span>
+                        {% endif %}
+                        <span class="ms-3">Рейтинг: 0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

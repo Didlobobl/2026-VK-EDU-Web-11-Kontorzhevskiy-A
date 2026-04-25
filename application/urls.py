@@ -9,6 +9,8 @@ urlpatterns = [
     path('', include('core.urls')),
 ]
 
+handler404 = 'questions.views.page_not_found'
+
 if settings.DEBUG:
     import debug_toolbar
     urlpatterns = [

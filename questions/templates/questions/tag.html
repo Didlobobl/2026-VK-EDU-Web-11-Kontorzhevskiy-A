@@ -12,9 +12,18 @@
         </div>
     </div>
 
-    {% for q in questions %}
+     {% for q in questions %}
         {% include 'questions/components/question_item.html' with question=q %}
+    {% empty %}
+        <div class="alert alert-info shadow-sm border-0">
+            <h4 class="alert-heading">Пока пусто!</h4>
+            <p>К сожалению, по тегу <strong>#{{ tag.name }}</strong> еще не задали ни одного вопроса.</p>
+            <hr>
+            <a href="{% url 'questions:ask' %}" class="btn btn-outline-primary btn-sm">
+                Станьте первым, кто это сделает!
+            </a>
+        </div>
     {% endfor %}
 
-    {% include 'questions/components/pagination.html' %}
+    {% include 'questions/components/pagination.html' with page_obj=questions %}
 {% endblock %}

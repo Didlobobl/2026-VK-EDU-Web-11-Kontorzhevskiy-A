@@ -35,37 +35,12 @@
     <hr>
     <h4>{{ answers|length }} Ответа</h4>
     {% for answer in answers %}
-        <div class="card mb-3 {% if answer.is_correct %}border-start border-success border-4{% endif %}">
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-2 text-center">
-                        <img src="{% if answer.avatar %}{{ answer.avatar }}{% else %}{% static 'questions/img/avatar-placeholder.png' %}{% endif %}"
-                             alt="Avatar" class="img-fluid rounded mb-1" style="max-width: 50px;">
-                        <div class="small fw-bold">{{ answer.author }}</div>
-                        <div class="small text-muted">{{ answer.rating }}</div>
-                        <div class="mt-1">
-                            <button class="btn btn-sm btn-outline-success like-btn" data-id="{{ answer.id }}" data-type="answer">+</button>
-                            <button class="btn btn-sm btn-outline-danger dislike-btn" data-id="{{ answer.id }}" data-type="answer">-</button>
-                        </div>
-                    </div>
-                    <div class="col-md-10">
-                        <p>{{ answer.text|linebreaksbr }}</p>
-                        {% if answer.is_correct %}
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" checked disabled id="correct{{ answer.id }}">
-                                <label class="form-check-label text-success fw-bold" for="correct{{ answer.id }}">Правильный ответ!</label>
-                            </div>
-                        {% endif %}
-                        <div class="text-muted small">{{ answer.created_at }}</div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        {% include 'questions/components/answer_item.html' with answer=answer %}
     {% empty %}
         <p class="text-muted">Пока нет ответов. Будьте первым!</p>
     {% endfor %}
-
-    {% include 'questions/components/pagination.html' with page_obj=answer_page_obj %}
+    {% include 'questions/components/pagination.html' with page_obj=answers %}
+    
 
     {% if user.is_authenticated %}
         <form method="post" action="{% url 'questions:answer' question.id %}" class="mt-5">
@@ -81,4 +56,5 @@
             <a href="{% url 'core:login' %}?next={{ request.path }}">Войдите</a>, чтобы оставить ответ.
         </div>
     {% endif %}
+    
 {% endblock %}

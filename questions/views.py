@@ -14,14 +14,17 @@ def hot(request):
 
 def tag(request, tag_name):
     tag_obj = get_object_or_404(Tag, name=tag_name)
-    questions = Question.objects.by_tag(tag_name)
-    page_obj = paginate(questions, request, 20)
-    return render(request, 'questions/tag.html', {'tag': tag_obj, 'questions': page_obj})
-
+    
+    questions_list = Question.objects.by_tag(tag_name)
+    page_obj = paginate(questions_list, request, 20)
+    return render(request, 'questions/tag.html', {
+        'tag': tag_obj, 
+        'questions': page_obj
+    })
 def question(request, question_id):
     item = get_object_or_404(Question.objects.select_related('author'), pk=question_id)
-    answers_list = item.answers.select_related('author').all() # Используем related_name из модели Answer
-    page_obj = paginate(answers_list, request, 30)
+    answers_list = item.answers.select_related('author').all() 
+    page_obj = paginate(answers_list, request, 5)
     return render(request, 'questions/question.html', {'question': item, 'answers': page_obj})
 
 def ask(request):
@@ -30,3 +33,6 @@ def ask(request):
 def answer(request, question_id):
     from django.shortcuts import redirect
     return redirect('questions:question', question_id=question_id)
+
+def page_not_found(request, exception):
+    return render(request, '404.html', status=404)
