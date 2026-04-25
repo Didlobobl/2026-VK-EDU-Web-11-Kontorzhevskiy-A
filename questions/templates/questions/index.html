@@ -3,12 +3,25 @@
 
 {% block content %}
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Новые вопросы</h2>
-        <div>
-            <a href="{% url 'questions:index' %}" class="btn btn-sm btn-link text-dark fw-bold">Новые</a>
-            <a href="{% url 'questions:hot_questions' %}" class="btn btn-sm btn-link text-muted">Популярные</a>
-        </div>
+    <h2>
+        {% if request.resolver_match.url_name == 'index' %}
+            Новые вопросы
+        {% else %}
+            Популярные вопросы
+        {% endif %}
+    </h2>
+    <div>
+        <a href="{% url 'questions:index' %}" 
+           class="btn btn-sm btn-link {% if request.resolver_match.url_name == 'index' %}text-dark fw-bold{% else %}text-muted text-decoration-none{% endif %}">
+           Новые
+        </a>
+        
+        <a href="{% url 'questions:hot_questions' %}" 
+           class="btn btn-sm btn-link {% if request.resolver_match.url_name == 'hot_questions' %}text-dark fw-bold{% else %}text-muted text-decoration-none{% endif %}">
+           Популярные
+        </a>
     </div>
+</div>
 
    {% for q in questions %}
     {% include 'questions/components/question_item.html' with question=q %}
