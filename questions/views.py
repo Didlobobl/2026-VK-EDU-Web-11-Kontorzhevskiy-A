@@ -1,7 +1,8 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from .models import Question, Tag, Answer
 from questions.utils import paginate
+from .forms import AskForm, AnswerForm
 
 def index(request):
     questions_list = Question.objects.new_questions()

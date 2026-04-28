@@ -4,6 +4,7 @@ from django.utils.http import url_has_allowed_host_and_scheme
 from django.conf import settings
 from .forms import LoginForm
 from django.contrib.auth.decorators import login_required
+from .forms import LoginForm, SignupForm, ProfileEditForm
 
 def login(request):
     if request.method == 'POST':
