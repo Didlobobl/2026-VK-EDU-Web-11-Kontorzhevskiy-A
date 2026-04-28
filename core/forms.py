@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 from .models import Profile
+from django.contrib.auth.decorators import login_required
 
 class LoginForm(forms.Form):
     username = forms.CharField(label="Логин", widget=forms.TextInput(attrs={'class': 'form-control'}))
@@ -44,3 +45,8 @@ class SignupForm(forms.ModelForm):
             user.save()
             Profile.objects.create(user=user) # Автоматически создаем профиль!
         return user
+    
+class ProfileEditForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['username', 'email']

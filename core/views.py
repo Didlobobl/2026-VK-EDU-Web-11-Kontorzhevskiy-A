@@ -3,6 +3,7 @@ from django.contrib.auth import authenticate, login as auth_login, logout as aut
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.conf import settings
 from .forms import LoginForm
+from django.contrib.auth.decorators import login_required
 
 def login(request):
     if request.method == 'POST':
@@ -36,3 +37,14 @@ def signup(request):
     else:
         form = SignupForm()
     return render(request, 'core/signup.html', {'form': form})
+
+@login_required(login_url='core:login')
+def profile(request):
+    if request.method == 'POST':
+        form = ProfileEditForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect('core:profile')
+    else:
+        form = ProfileEditForm(instance=request.user) 
+    return render(request, 'core/profile.html', {'form': form})
