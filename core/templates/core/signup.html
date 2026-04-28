@@ -11,9 +11,10 @@
                 <h3 class="mb-0">Регистрация</h3>
             </div>
             <div class="card-body">
-                {% if form_errors %}
+                
+                {% if form.non_field_errors %}
                     <div class="alert alert-danger" role="alert">
-                        Пожалуйста, исправьте ошибки в форме.
+                        {{ form.non_field_errors|striptags }}
                     </div>
                 {% endif %}
 
@@ -25,11 +26,14 @@
                         <input type="email"
                                name="email"
                                id="id_email"
-                               class="form-control"
+                               class="form-control {% if form.email.errors %}is-invalid{% endif %}"
                                placeholder="ivanov@mail.ru"
+                               value="{{ form.email.value|default:'' }}"
                                required>
                         <div class="form-text">Введите действующий email, он будет использоваться для входа.</div>
-                        <div class="invalid-feedback">Введите корректный email.</div>
+                        {% if form.email.errors %}
+                            <div class="invalid-feedback">{{ form.email.errors|striptags }}</div>
+                        {% endif %}
                     </div>
 
                     <div class="mb-3">
@@ -37,39 +41,54 @@
                         <input type="text"
                                name="username"
                                id="id_username"
-                               class="form-control"
+                               class="form-control {% if form.username.errors %}is-invalid{% endif %}"
                                placeholder="Ваш уникальный ник"
+                               value="{{ form.username.value|default:'' }}"
                                required>
                         <div class="form-text">Будет отображаться рядом с вашими вопросами и ответами.</div>
+                        {% if form.username.errors %}
+                            <div class="invalid-feedback">{{ form.username.errors|striptags }}</div>
+                        {% endif %}
                     </div>
 
+                    <!-- Пароль -->
                     <div class="mb-3">
                         <label for="id_password" class="form-label fw-semibold">Пароль</label>
                         <input type="password"
                                name="password"
                                id="id_password"
-                               class="form-control"
+                               class="form-control {% if form.password.errors %}is-invalid{% endif %}"
                                required>
                         <div class="form-text">Минимум 8 символов.</div>
+                        {% if form.password.errors %}
+                            <div class="invalid-feedback">{{ form.password.errors|striptags }}</div>
+                        {% endif %}
                     </div>
 
                     <div class="mb-3">
-                        <label for="id_password2" class="form-label fw-semibold">Повторите пароль</label>
+                        <label for="id_password_confirm" class="form-label fw-semibold">Повторите пароль</label>
                         <input type="password"
-                               name="password2"
-                               id="id_password2"
-                               class="form-control"
+                               name="password_confirm"
+                               id="id_password_confirm"
+                               class="form-control {% if form.password_confirm.errors %}is-invalid{% endif %}"
                                required>
+                        {% if form.password_confirm.errors %}
+                            <div class="invalid-feedback">{{ form.password_confirm.errors|striptags }}</div>
+                        {% endif %}
                     </div>
 
+                    <!-- Аватар -->
                     <div class="mb-4">
                         <label for="id_avatar" class="form-label fw-semibold">Аватар</label>
                         <input type="file"
                                name="avatar"
                                id="id_avatar"
-                               class="form-control"
+                               class="form-control {% if form.avatar.errors %}is-invalid{% endif %}"
                                accept="image/*">
                         <div class="form-text">Необязательно. Рекомендуем квадратное изображение.</div>
+                        {% if form.avatar.errors %}
+                            <div class="invalid-feedback">{{ form.avatar.errors|striptags }}</div>
+                        {% endif %}
                     </div>
 
                     <button type="submit" class="btn btn-success w-100">Создать аккаунт</button>
