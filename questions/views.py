@@ -1,4 +1,5 @@
 from django.shortcuts import render, get_object_or_404
+from django.contrib.auth.decorators import login_required
 from .models import Question, Tag, Answer
 from questions.utils import paginate
 
@@ -36,3 +37,29 @@ def answer(request, question_id):
 
 def page_not_found(request, exception):
     return render(request, '404.html', status=404)
+
+@login_required(login_url='core:login')
+def ask(request):
+    if request.method == 'POST':
+        form = AskForm(request.POST)
+        if form.is_valid():
+            question = form.save(user=request.user)
+            return redirect('questions:question', question_id=question.id)
+    else:
+        form = AskForm()
+    return render(request, 'questions/ask.html', {'form': form})
+
+@login_required(login_url='core:login')
+def answer(request, question_id):
+    question_obj = get_object_or_404(Question, pk=question_id)
+    if request.method == 'POST':
+        form = AnswerForm(request.POST)
+        if form.is_valid():
+            ans = form.save(commit=False)
+            ans.author = request.user
+            ans.question = question_obj
+            ans.save()
+            
+            return redirect(f"/question/{question_id}/#answer-{ans.id}")
+            
+    return redirect('questions:question', question_id=question_id)
