@@ -21,11 +21,28 @@
                 </form>
 
                 <div class="d-flex align-items-center text-white">
-                    <img src="{% static 'questions/img/avatar-placeholder.png' %}" class="rounded-circle me-2" width="40">
-                    <a href="{% url 'core:profile' %}" class="text-white me-3 text-decoration-none small">Dr. House</a>
-                    <a href="{% url 'core:login' %}" class="btn btn-outline-light btn-sm me-2">Выход</a>
-                    <a href="{% url 'questions:ask' %}" class="btn btn-primary btn-sm">Задать вопрос</a>
-                </div>
+                    {% if user.is_authenticated %}
+                        <!-- Этот блок видят ТОЛЬКО авторизованные пользователи -->
+                        
+                        {# Отображаем аватар пользователя, если он есть, иначе — заглушку #}
+                        <img src="{% if user.avatar %}{{ user.avatar.url }}{% else %}{% static 'questions/img/avatar-placeholder.png' %}{% endif %}" 
+                            class="rounded-circle me-2" 
+                            width="40" height="40" 
+                            style="object-fit: cover;">
+
+                        <a href="{% url 'core:profile' %}" class="text-white me-3 text-decoration-none small">
+                            {{ user.username }}
+                        </a>
+
+                        <a href="{% url 'core:logout' %}" class="btn btn-outline-light btn-sm me-2">Выход</a>
+                        
+                        <a href="{% url 'questions:ask' %}" class="btn btn-primary btn-sm">Задать вопрос</a>
+
+                    {% else %}
+                        <a href="{% url 'core:login' %}" class="btn btn-outline-light btn-sm me-2">Войти</a>
+                        <a href="{% url 'core:signup' %}" class="btn btn-primary btn-sm">Регистрация</a>
+                    {% endif %}
+                </div
             </div>
         </div>
     </header>

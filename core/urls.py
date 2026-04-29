@@ -6,5 +6,6 @@ app_name = 'core'
 urlpatterns = [
     path('login/', views.login, name='login'),
     path('signup/', views.signup, name='signup'),
-    path('profile/edit/', views.profile, name='profile'), # убедись, что name совпадает с тем, что в шаблоне
+    path('profile/edit/', views.profile, name='profile'), 
+    path('logout/', views.logout, name='logout')
 ]

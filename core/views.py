@@ -5,6 +5,7 @@ from django.conf import settings
 from .forms import LoginForm
 from django.contrib.auth.decorators import login_required
 from .forms import LoginForm, SignupForm, ProfileEditForm
+from django.contrib.auth import logout as auth_logout
 
 def login(request):
     if request.method == 'POST':
@@ -49,3 +50,7 @@ def profile(request):
     else:
         form = ProfileEditForm(instance=request.user) 
     return render(request, 'core/profile.html', {'form': form})
+
+def logout(request):
+    auth_logout(request)
+    return redirect(request.META.get('HTTP_REFERER', 'questions:index'))
