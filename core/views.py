@@ -43,7 +43,7 @@ def signup(request):
 @login_required(login_url='core:login')
 def profile(request):
     if request.method == 'POST':
-        form = ProfileEditForm(request.POST, instance=request.user)
+        form = ProfileEditForm(request.POST, request.FILES, instance=request.user)
         if form.is_valid():
             form.save()
             return redirect('core:profile')
