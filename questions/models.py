@@ -30,7 +30,6 @@ class Question(models.Model):
     tags = models.ManyToManyField(Tag, related_name='questions', verbose_name="Теги")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
     
-    # Подключаем наш менеджер
     objects = QuestionManager()
 
     def __str__(self):
@@ -55,15 +54,21 @@ class Answer(models.Model):
         verbose_name_plural = 'Ответы'
 
 class QuestionLike(models.Model):
+    VALUE_CHOICES = [(1, 'Like'), (-1, 'Dislike')]
+    
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='likes')
+    value = models.SmallIntegerField(choices=VALUE_CHOICES, default=1)
 
     class Meta:
         unique_together = ('user', 'question') 
 
 class AnswerLike(models.Model):
+    VALUE_CHOICES = [(1, 'Like'), (-1, 'Dislike')]
+    
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     answer = models.ForeignKey(Answer, on_delete=models.CASCADE, related_name='likes')
+    value = models.SmallIntegerField(choices=VALUE_CHOICES, default=1)
 
     class Meta:
         unique_together = ('user', 'answer')

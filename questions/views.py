@@ -1,6 +1,8 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
-from .models import Question, Tag, Answer
+from django.views.decorators.http import require_POST
+from .models import Question, Tag, Answer, QuestionLike, AnswerLike
 from questions.utils import paginate
 from .forms import AskForm, AnswerForm
 
@@ -64,3 +66,60 @@ def answer(request, question_id):
             return redirect(f"/question/{question_id}/#answer-{ans.id}")
             
     return redirect('questions:question', question_id=question_id)
+
+@login_required
+@require_POST
+def vote(request):
+    obj_id = request.POST.get('id')
+    obj_type = request.POST.get('type') 
+    action = request.POST.get('action') 
+    
+    val = 1 if action == 'like' else -1
+    
+    if obj_type == 'question':
+        model = Question
+        like_model = QuestionLike
+        lookup_field = 'question'
+    else:
+        model = Answer
+        like_model = AnswerLike
+        lookup_field = 'answer'
+
+    obj = get_object_or_404(model, pk=obj_id)
+    
+    vote_obj, created = like_model.objects.get_or_create(
+        user=request.user,
+        **{lookup_field: obj},
+        defaults={'value': val}
+    )
+
+    if not created:
+        if vote_obj.value == val:
+            vote_obj.delete()
+        else:
+            vote_obj.value = val
+            vote_obj.save()
+
+    new_rating = obj.get_rating()
+
+    return JsonResponse({
+        'status': 'ok',
+        'new_rating': new_rating
+    })
+
+
+@require_POST
+@login_required
+def mark_correct(request, answer_id):
+    answer = get_object_or_404(Answer, pk=answer_id)
+    question = answer.question
+
+    if request.user != question.author:
+        return JsonResponse({'error': 'Только автор вопроса может выбрать правильный ответ.'}, status=403)
+
+    question.answers.update(is_correct=False)
+    
+    answer.is_correct = True
+    answer.save()
+
+    return JsonResponse({'status': 'ok'})
