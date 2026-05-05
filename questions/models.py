@@ -1,17 +1,21 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.db.models import Count
+from django.db.models import Count, Sum
 
 class QuestionManager(models.Manager):
     def new_questions(self):
         return self.order_by('-created_at')
 
     def hot_questions(self):
-        # Считаем количество лайков и сортируем
-        return self.annotate(likes_count=Count('likes')).order_by('-likes_count')
+         return self.get_with_related().annotate(count_likes=Count('likes', distinct=True)).order_by('-count_likes')
     
     def by_tag(self, tag_name):
-        return self.filter(tags__name=tag_name)
+        return self.get_with_related().filter(tags__name=tag_name)
+    
+    def get_with_related(self):
+        qs = self.select_related('author__profile').prefetch_related('tags')
+        qs = qs.annotate(answers_count=Count('answers', distinct=True))
+        return qs
     
 class Tag(models.Model):
     name = models.CharField(max_length=50, unique=True, verbose_name="Имя тега")
@@ -34,6 +38,10 @@ class Question(models.Model):
 
     def __str__(self):
         return self.title
+    
+    def get_rating(self):
+        result = self.likes.aggregate(total=Sum('value'))['total']
+        return result if result is not None else 0
 
     class Meta:
         verbose_name = 'Вопрос'
@@ -48,6 +56,10 @@ class Answer(models.Model):
 
     def __str__(self):
         return f"Ответ от {self.author.username} к {self.question.title}"
+    
+    def get_rating(self):
+        result = self.likes.aggregate(total=Sum('value'))['total']
+        return result if result is not None else 0
 
     class Meta:
         verbose_name = 'Ответ'

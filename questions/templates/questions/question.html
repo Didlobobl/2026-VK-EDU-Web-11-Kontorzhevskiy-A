@@ -7,10 +7,10 @@
     <div class="card mb-5 border-0 shadow-sm">
         <div class="card-body">
             <div class="row">
-                <div class="col-md-2 text-center">
+                <div class="col-md-2 text-center btn-group-vote">
                     <img src="{% if question.avatar %}{{ question.avatar }}{% else %}{% static 'questions/img/avatar-placeholder.png' %}{% endif %}"
                          alt="Avatar" class="img-fluid rounded mb-2" style="max-width: 80px;">
-                    <div class="fw-bold mt-1">{{ question.rating }}</div>
+                    <div class="fw-bold rating-counter" id="rating-question-{{ question.id }}">{{ question.get_rating }}</div>
                     <div class="mt-2">
                         <button class="btn btn-sm btn-outline-success like-btn" data-id="{{ question.id }}" data-type="question">+</button>
                         <button class="btn btn-sm btn-outline-danger dislike-btn" data-id="{{ question.id }}" data-type="question">-</button>
@@ -56,5 +56,7 @@
             <a href="{% url 'core:login' %}?next={{ request.path }}">Войдите</a>, чтобы оставить ответ.
         </div>
     {% endif %}
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     
 {% endblock %}

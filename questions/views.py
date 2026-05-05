@@ -27,8 +27,8 @@ def tag(request, tag_name):
     })
 def question(request, question_id):
     item = get_object_or_404(Question.objects.select_related('author'), pk=question_id)
-    answers_list = item.answers.select_related('author').all() 
-    page_obj = paginate(answers_list, request, 5)
+    answers_list = item.answers.select_related('author__profile').order_by('-created_at')
+    page_obj = paginate(answers_list, request, 30)
     return render(request, 'questions/question.html', {'question': item, 'answers': page_obj})
 
 def ask(request):
@@ -110,14 +110,16 @@ def vote(request):
 
 @require_POST
 @login_required
-def mark_correct(request, answer_id):
+def mark_correct(request):
+    answer_id = request.POST.get('answer_id')
+    
     answer = get_object_or_404(Answer, pk=answer_id)
     question = answer.question
 
     if request.user != question.author:
-        return JsonResponse({'error': 'Только автор вопроса может выбрать правильный ответ.'}, status=403)
+        return JsonResponse({'message': 'Только автор вопроса может выбрать правильный ответ.'}, status=403)
 
-    question.answers.update(is_correct=False)
+    question.answers.all().update(is_correct=False)
     
     answer.is_correct = True
     answer.save()
