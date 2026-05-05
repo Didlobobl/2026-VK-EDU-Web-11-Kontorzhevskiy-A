@@ -92,19 +92,22 @@ def vote(request):
         **{lookup_field: obj},
         defaults={'value': val}
     )
-
+    is_active = True
     if not created:
         if vote_obj.value == val:
             vote_obj.delete()
+            is_active = False 
         else:
             vote_obj.value = val
             vote_obj.save()
+            is_active = True
 
     new_rating = obj.get_rating()
 
     return JsonResponse({
         'status': 'ok',
-        'new_rating': new_rating
+        'new_rating': new_rating,
+        'is_active': is_active
     })
 
 
