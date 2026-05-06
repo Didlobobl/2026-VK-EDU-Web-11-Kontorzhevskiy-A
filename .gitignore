@@ -18,3 +18,4 @@ static/
 .env.docker
 .env.*
 *.log
+avatars/
