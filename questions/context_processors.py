@@ -8,8 +8,6 @@ def sidebar_data(request):
         questions_count=Count('questions')
     ).order_by('-questions_count')[:20]
 
-    # Топ 10 пользователей (упрощенно: по количеству созданных ими вопросов)
-    # В будущем здесь можно считать по рейтингу лайков за неделю, как требует ТЗ
     best_members = User.objects.annotate(
         q_count=Count('question')
     ).order_by('-q_count')[:10]
