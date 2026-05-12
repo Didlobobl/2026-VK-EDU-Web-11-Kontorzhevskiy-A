@@ -9,22 +9,33 @@
         <h2 class="h4 mb-0">Задать новый вопрос</h2>
     </div>
     <div class="card-body">
+        
+        {% if form.non_field_errors %}
+        <div class="alert alert-danger" role="alert">
+            {{ form.non_field_errors }}
+        </div>
+        {% endif %}
+
         <form method="post" action="{% url 'questions:ask' %}" novalidate>
             {% csrf_token %}
 
+            <!-- Заголовок -->
             <div class="mb-3">
                 <label for="id_title" class="form-label fw-semibold">Заголовок</label>
                 <input type="text"
                        name="title"
                        id="id_title"
-                       class="form-control"
+                       class="form-control {% if form.title.errors %}is-invalid{% endif %}"
                        placeholder="Например: Как настроить Django для работы с PostgreSQL?"
                        maxlength="200"
+                       value="{{ form.title.value|default:'' }}"
                        required>
                 <div class="form-text">Кратко опишите суть вопроса (не более 200 символов).</div>
-                <div class="invalid-feedback">
-                    Пожалуйста, введите заголовок (от 10 до 200 символов).
-                </div>
+                {% if form.title.errors %}
+                    <div class="invalid-feedback">
+                        {{ form.title.errors|striptags }}
+                    </div>
+                {% endif %}
             </div>
 
             <div class="mb-3">
@@ -32,25 +43,32 @@
                 <textarea name="text"
                           id="id_text"
                           rows="6"
-                          class="form-control"
+                          class="form-control {% if form.text.errors %}is-invalid{% endif %}"
                           placeholder="Подробно опишите проблему, приложите код, ошибки, что уже попробовали..."
-                          required></textarea>
+                          required>{{ form.text.value|default:'' }}</textarea>
                 <div class="form-text">Используйте Markdown для форматирования. Минимум 30 символов.</div>
+                {% if form.text.errors %}
+                    <div class="invalid-feedback">
+                        {{ form.text.errors|striptags }}
+                    </div>
+                {% endif %}
             </div>
 
             <div class="mb-4">
-                <label for="id_tags" class="form-label fw-semibold">Теги</label>
+                <label for="id_tag_string" class="form-label fw-semibold">Теги</label>
                 <input type="text"
-                       name="tags"
-                       id="id_tags"
-                       class="form-control"
+                       name="tag_string"
+                       id="id_tag_string"
+                       class="form-control {% if form.tag_string.errors %}is-invalid{% endif %}"
                        placeholder="python, django, postgresql"
-                       value=""
+                       value="{{ form.tag_string.value|default:'' }}"
                        maxlength="100">
-                <div class="form-text">Укажите от 1 до 3 тегов через запятую. Теги должны быть короткими и отражать суть вопроса.</div>
-                <div class="invalid-feedback">
-                    Можно использовать только буквы, цифры и дефис. Максимум 3 тега.
-                </div>
+                <div class="form-text">Укажите от 1 до 3 тегов через запятую.</div>
+                {% if form.tag_string.errors %}
+                    <div class="invalid-feedback">
+                        {{ form.tag_string.errors|striptags }}
+                    </div>
+                {% endif %}
             </div>
 
             <div class="d-flex gap-2">
@@ -60,11 +78,4 @@
         </form>
     </div>
 </div>
-
-{# Блок для отображения общих ошибок формы (если будут) #}
-{% if form_errors %}
-<div class="alert alert-danger mt-3" role="alert">
-    <strong>Ошибка!</strong> Пожалуйста, исправьте выделенные поля.
-</div>
-{% endif %}
 {% endblock %}

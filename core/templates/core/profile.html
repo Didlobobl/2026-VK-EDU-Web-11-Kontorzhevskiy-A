@@ -4,69 +4,87 @@
 {% block title %}Настройки профиля — AskPupkin{% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-lg-9">
-        <h2 class="mb-4">Настройки профиля: {{ user.username|default:"Пользователь" }}</h2>
+    <h2 class="mb-4">Настройки профиля: {{ user.username }}</h2>
 
-        <form method="post" action="{% url 'core:profile' %}" enctype="multipart/form-data" novalidate>
-            {% csrf_token %}
+    <form method="post" action="{% url 'core:profile' %}" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
 
-            <div class="row">
-                <div class="col-md-8">
-                    <div class="mb-3">
-                        <label for="id_username" class="form-label fw-semibold">Логин</label>
-                        <input type="text"
-                               name="username"
-                               id="id_username"
-                               class="form-control"
-                               value="{{ user.username|default:'dr_house' }}"
-                               required>
-                        <div class="form-text">Ваш уникальный идентификатор.</div>
-                    </div>
+        <div class="row">
+            
 
-                    <div class="mb-3">
-                        <label for="id_email" class="form-label fw-semibold">Email</label>
-                        <input type="email"
-                               name="email"
-                               id="id_email"
-                               class="form-control"
-                               value="{{ user.email|default:'house@vicodin.com' }}"
-                               required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="id_nickname" class="form-label fw-semibold">Никнейм</label>
-                        <input type="text"
-                               name="nickname"
-                               id="id_nickname"
-                               class="form-control"
-                               value="{{ user.first_name|default:'Gregory' }}">
-                        <div class="form-text">Как вас будут видеть другие пользователи.</div>
-                    </div>
-
-                    <div class="mb-4">
-                        <label for="id_avatar" class="form-label fw-semibold">Загрузить новый аватар</label>
-                        <input type="file"
-                               name="avatar"
-                               id="id_avatar"
-                               class="form-control"
-                               accept="image/*">
-                        <div class="form-text">Поддерживаются JPG, PNG, GIF. Не более 5 МБ.</div>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+            <div class="col-md-8">
+                <div class="mb-3">
+                    <label for="id_username" class="form-label fw-semibold">Логин</label>
+                    <input type="text" name="username" id="id_username"
+                           class="form-control {% if form.username.errors %}is-invalid{% endif %}"
+                           value="{{ form.username.value|default:user.username }}">
+                    {% if form.username.errors %}<div class="invalid-feedback">{{ form.username.errors|striptags }}</div>{% endif %}
+                    <div class="form-text">Ваш уникальный идентификатор.</div>
                 </div>
 
-                <div class="col-md-4 text-center">
-                    <p class="fw-semibold">Текущий аватар:</p>
-                    <img src="{% if user.avatar %}{{ user.avatar.url }}{% else %}{% static 'core/img/avatar-placeholder.png' %}{% endif %}"
-                         alt="Avatar"
-                         class="img-thumbnail rounded mb-2"
-                         style="width: 150px;">
+                <div class="mb-3">
+                    <label for="id_email" class="form-label fw-semibold">Email</label>
+                    <input type="email" name="email" id="id_email"
+                           class="form-control {% if form.email.errors %}is-invalid{% endif %}"
+                           value="{{ form.email.value|default:user.email }}">
+                    {% if form.email.errors %}<div class="invalid-feedback">{{ form.email.errors|striptags }}</div>{% endif %}
                 </div>
+
+                <div class="mb-3">
+                    <label for="id_nickname" class="form-label fw-semibold">Никнейм</label>
+                    <input type="text" name="nickname" id="id_nickname"
+                           class="form-control {% if form.nickname.errors %}is-invalid{% endif %}"
+                           value="{{ form.nickname.value|default:user.profile.nickname }}">
+                    {% if form.nickname.errors %}<div class="invalid-feedback">{{ form.nickname.errors|striptags }}</div>{% endif %}
+                    <div class="form-text">Как вас будут видеть другие пользователи.</div>
+                </div>
+
+                <button type="submit" class="btn btn-primary mt-3 px-4">Сохранить изменения</button>
             </div>
-        </form>
-    </div>
 
-</div>
+            <div class="col-md-4 text-center">
+                <p class="fw-semibold">Аватар:</p>
+                
+                <div class="avatar-upload-wrapper mx-auto" 
+                    onclick="document.getElementById('id_avatar_hidden').click()"
+                    data-bs-toggle="tooltip" 
+                    data-bs-title="Нажмите, чтобы выбрать новое фото">
+                    
+                    <img src="{% if user.profile.avatar %}{{ user.profile.avatar.url }}{% else %}{% static 'questions/img/avatar-placeholder.png' %}{% endif %}"
+                        class="img-thumbnail rounded shadow-sm" 
+                        id="avatar_preview"
+                        style="width: 180px; height: 180px; object-fit: cover; cursor: pointer;">
+                    
+                    <div class="avatar-overlay">
+                        <span>Изменить</span>
+                    </div>
+                </div>
+
+                <input type="file" name="avatar" id="id_avatar_hidden" 
+                    class="d-none" accept="image/*" 
+                    onchange="previewImage(this)">
+                
+                <div id="file_name_display" class="small text-muted mt-2"></div>
+                
+                {% if form.avatar.errors %}
+                    <div class="text-danger small mt-2">{{ form.avatar.errors|striptags }}</div>
+                {% endif %}
+            </div>
+
+        </div> 
+    </form>
+
+<script>
+function previewImage(input) {
+    const file = input.files[0];
+    const preview = document.getElementById('avatar_preview');
+    const fileNameDisplay = document.getElementById('file_name_display');
+    if (file) {
+        fileNameDisplay.textContent = "Выбран файл: " + file.name;
+        const reader = new FileReader();
+        reader.onload = function(e) { preview.src = e.target.result; }
+        reader.readAsDataURL(file);
+    }
+}
+</script>
 {% endblock %}

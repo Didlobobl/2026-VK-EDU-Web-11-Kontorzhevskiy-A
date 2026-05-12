@@ -11,51 +11,56 @@
                 <h3 class="mb-0">Вход в аккаунт</h3>
             </div>
             <div class="card-body">
-                {% if form_errors %}
+                
+                {% if form.non_field_errors %}
                     <div class="alert alert-danger" role="alert">
-                        Неверный логин или пароль. Пожалуйста, попробуйте снова.
+                        {{ form.non_field_errors|striptags }}
                     </div>
                 {% endif %}
 
                 <form method="post" action="{% url 'core:login' %}" novalidate>
                     {% csrf_token %}
+                    
+                    {% if request.GET.next %}
+                        <input type="hidden" name="next" value="{{ request.GET.next }}">
+                    {% endif %}
 
-                    {# Поле "Логин" (можно использовать email или username) #}
                     <div class="mb-3">
-                        <label for="id_username" class="form-label fw-semibold">Логин или email</label>
+                        <label for="id_username" class="form-label fw-semibold">Никнейм</label>
                         <input type="text"
                                name="username"
                                id="id_username"
-                               class="form-control"
-                               placeholder="Введите ваш логин или email"
-                               required
-                               autofocus>
-                        <div class="form-text">Введите данные, указанные при регистрации.</div>
-                        <div class="invalid-feedback">
-                            Пожалуйста, введите логин.
-                        </div>
+                               class="form-control {% if form.username.errors or form.non_field_errors %}is-invalid{% endif %}"
+                               placeholder="Ваш никнейм"
+                               value="{{ form.username.value|default:'' }}"
+                               required>
+                        {% if form.username.errors %}
+                            <div class="invalid-feedback">
+                                {{ form.username.errors|striptags }}
+                            </div>
+                        {% endif %}
                     </div>
 
-                    <div class="mb-3">
+                    <div class="mb-4">
                         <label for="id_password" class="form-label fw-semibold">Пароль</label>
                         <input type="password"
                                name="password"
                                id="id_password"
-                               class="form-control"
-                               placeholder="Ваш пароль"
+                               class="form-control {% if form.password.errors or form.non_field_errors %}is-invalid{% endif %}"
+                               placeholder="********"
                                required>
-                        <div class="invalid-feedback">
-                            Введите пароль.
-                        </div>
+                        {% if form.password.errors %}
+                            <div class="invalid-feedback">
+                                {{ form.password.errors|striptags }}
+                            </div>
+                        {% endif %}
                     </div>
 
-                    <div class="d-grid gap-2 mb-3">
-                        <button type="submit" class="btn btn-primary btn-lg">Войти</button>
-                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Войти</button>
 
-                    <div class="text-center">
+                    <div class="text-center mt-3">
                         <span class="text-muted">Нет аккаунта?</span>
-                        <a href="{% url 'core:signup' %}" class="text-decoration-none">Зарегистрируйтесь</a>
+                        <a href="{% url 'core:signup' %}" class="text-decoration-none">Зарегистрироваться</a>
                     </div>
                 </form>
             </div>
