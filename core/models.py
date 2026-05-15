@@ -9,7 +9,7 @@ def avatar_upload_path(instance, filename):
     return os.path.join('avatars/', filename)
 
 class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    user = models.OneToOneField('auth.User', on_delete=models.CASCADE, related_name='profile')
     avatar = models.ImageField(upload_to=avatar_upload_path, blank=True, null=True)
     nickname = models.CharField(max_length=100, blank=True, verbose_name="Никнейм")
 

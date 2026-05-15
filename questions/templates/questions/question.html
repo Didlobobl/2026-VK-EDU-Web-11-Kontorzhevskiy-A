@@ -33,7 +33,8 @@
     </div>
 
     <hr>
-    <h4>{{ answers|length }} Ответа</h4>
+    {% load ru_pluralize %}
+    <h4>{{ answers.paginator.count }} ответ{{ answers.paginator.count|ru_pluralize:",а,ов" }}</h4>
     {% for answer in answers %}
         {% include 'questions/components/answer_item.html' with answer=answer %}
     {% empty %}
@@ -43,14 +44,24 @@
     
 
     {% if user.is_authenticated %}
-        <form method="post" action="{% url 'questions:answer' question.id %}" class="mt-5">
-            {% csrf_token %}
-            <div class="mb-3">
-                <label class="form-label fw-bold">Ваш ответ</label>
-                <textarea name="text" class="form-control" rows="5" placeholder="Введите ваш ответ здесь..." required></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">Опубликовать ответ</button>
-        </form>
+        <form method="post" action="{% url 'questions:question' question.id %}" class="mt-5" novalidate>
+        {% csrf_token %}
+        <div class="mb-3">
+            <label class="form-label fw-bold">Ваш ответ</label>
+            
+            <textarea name="text" 
+                      class="form-control {% if form.text.errors %}is-invalid{% endif %}" 
+                      rows="5" 
+                      placeholder="Введите ваш ответ здесь...">{{ form.text.value|default_if_none:"" }}</textarea>
+            
+            {% if form.text.errors %}
+                <div class="invalid-feedback">
+                    {{ form.text.errors|striptags }}
+                </div>
+            {% endif %}
+        </div>
+        <button type="submit" class="btn btn-primary">Опубликовать ответ</button>
+    </form>
     {% else %}
         <div class="alert alert-info mt-4">
             <a href="{% url 'core:login' %}?next={{ request.path }}">Войдите</a>, чтобы оставить ответ.

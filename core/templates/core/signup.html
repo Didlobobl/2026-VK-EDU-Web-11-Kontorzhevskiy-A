@@ -30,7 +30,7 @@
                                placeholder="ivanov@mail.ru"
                                value="{{ form.email.value|default:'' }}"
                                required>
-                        <div class="form-text">Введите действующий email, он будет использоваться для входа.</div>
+                        <div class="form-text">Введите действующий email</div>
                         {% if form.email.errors %}
                             <div class="invalid-feedback">{{ form.email.errors|striptags }}</div>
                         {% endif %}
