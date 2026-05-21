@@ -13,6 +13,56 @@ services:
       - POSTGRES_PASSWORD=${DB_PASSWORD}
     ports:
       - "5432:5432"
+    
+    services:
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis_all
+    ports:
+      - "6379:6379"
+
+  celery_worker:
+    build: .
+    container_name: celery_worker
+    command: celery -A application worker -l info
+    volumes:
+      - .:/app
+    env_file:
+      - .env.docker
+    depends_on:
+      - db
+      - redis
+
+  celery_beat:
+    build: .
+    container_name: celery_beat
+    command: celery -A application beat -l info
+    volumes:
+      - .:/app
+    env_file:
+      - .env.docker
+    depends_on:
+      - db
+      - redis
+
+  centrifugo:
+    image: centrifugo/centrifugo:v5
+    container_name: centrifugo
+    volumes:
+      - ./centrifugo_config.json:/centrifugo/config.json
+    command: centrifugo -c config.json
+    ports:
+      - "8001:8000"
+    depends_on:
+      - redis
+
+  maildev:
+    image: maildev/maildev
+    container_name: maildev
+    ports:
+      - "1080:1080" 
+      - "1025:1025" 
 
   web:
     build: .
