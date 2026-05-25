@@ -15,10 +15,10 @@ services:
       - "5432:5432"
     
     services:
-
+    
   redis:
     image: redis:7-alpine
-    container_name: redis_all
+    container_name: redis_cache
     ports:
       - "6379:6379"
 
@@ -61,7 +61,7 @@ services:
     image: maildev/maildev
     container_name: maildev
     ports:
-      - "1080:1080" 
+      - "1080:1080"
       - "1025:1025" 
 
   web:
