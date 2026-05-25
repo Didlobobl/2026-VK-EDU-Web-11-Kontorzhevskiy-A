@@ -41,9 +41,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.postgres',
     'core',
     'questions',
-    'django.contrib.postgres'
 ]
 
 MIDDLEWARE = [
@@ -76,33 +76,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'application.wsgi.application'
-
-REDIS_HOST = os.environ.get('REDIS_HOST', 'redis')
-REDIS_PORT = os.environ.get('REDIS_PORT', '6379')
-
-CACHES = {
-    "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": f"redis://{REDIS_HOST}:{REDIS_PORT}/0",
-        "OPTIONS": {"CLIENT_CLASS": "django_redis.client.DefaultClient"},
-        "TIMEOUT": 600,
-    }
-}
-
-CELERY_BROKER_URL = f"redis://{REDIS_HOST}:{REDIS_PORT}/1"
-CELERY_RESULT_BACKEND = f"redis://{REDIS_HOST}:{REDIS_PORT}/1"
-CELERY_BEAT_SCHEDULER = "redbeat.RedBeatScheduler"
-CELERY_REDBEAT_REDIS_URL = f"redis://{REDIS_HOST}:{REDIS_PORT}/2"
-
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = 'maildev'
-EMAIL_PORT = 1025
-DEFAULT_FROM_EMAIL = "no-reply@askpupkin.ru"
-
-CENTRIFUGO_API_URL = "http://centrifugo:8000/api"
-CENTRIFUGO_API_KEY = "your-api-key" # совпадает с config.json
-CENTRIFUGO_SECRET = "your-secret"   # совпадает с config.json
-CENTRIFUGO_WS_URL = "ws://localhost:8001/connection/websocket"
 
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
@@ -162,3 +135,41 @@ if DEBUG:
     INSTALLED_APPS += ['debug_toolbar']
     MIDDLEWARE = ['debug_toolbar.middleware.DebugToolbarMiddleware'] + MIDDLEWARE
     INTERNAL_IPS = [ip[: ip.rfind(".")] + ".1" for ip in ips] + ["127.0.0.1", "10.0.2.2"]
+
+REDIS_HOST = os.environ.get('REDIS_HOST', 'redis')
+REDIS_PORT = os.environ.get('REDIS_PORT', '6379')
+
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": f"redis://{REDIS_HOST}:{REDIS_PORT}/0",
+        "OPTIONS": {"CLIENT_CLASS": "django_redis.client.DefaultClient"},
+        "TIMEOUT": 60 * 10,
+    }
+}
+
+from celery.schedules import crontab
+
+CELERY_BROKER_URL = f"redis://{REDIS_HOST}:{REDIS_PORT}/1"
+CELERY_RESULT_BACKEND = f"redis://{REDIS_HOST}:{REDIS_PORT}/1"
+CELERY_BEAT_SCHEDULER = "redbeat.RedBeatScheduler"
+REDBEAT_REDIS_URL = f"redis://{REDIS_HOST}:{REDIS_PORT}/2"
+
+CELERY_BEAT_SCHEDULE = {
+    'update-sidebar-every-15-minutes': {
+        'task': 'questions.tasks.update_sidebar_cache',
+        'schedule': crontab(minute='*/15'),
+    },
+}
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = 'maildev'
+EMAIL_PORT = 1025
+EMAIL_USE_TLS = False
+DEFAULT_FROM_EMAIL = "no-reply@askpupkin.ru"
+
+CENTRIFUGO_API_URL = "http://centrifugo:8000/api"
+CENTRIFUGO_API_KEY = os.environ.get("CENTRIFUGO_API_KEY", "my_very_strong_api_key_123")
+CENTRIFUGO_SECRET = os.environ.get("CENTRIFUGO_SECRET", "my_secret_token_hmac_key_456")
+CENTRIFUGO_WS_URL = "ws://localhost:8001/connection/websocket"
