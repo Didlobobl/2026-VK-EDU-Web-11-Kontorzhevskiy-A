@@ -9,7 +9,7 @@ from django.core.mail import send_mail
 from django.conf import settings
 from .models import Tag, Question
 
-@shared_task
+@shared_task(name='questions.tasks.update_sidebar_cache')
 def update_sidebar_cache():
     three_months = timezone.now() - timedelta(days=90)
     tags = Tag.objects.filter(questions__created_at__gte=three_months)\
@@ -21,7 +21,7 @@ def update_sidebar_cache():
                 .annotate(activity=Count('question')).order_by('-activity')[:10]
     cache.set('best_members_cache', list(users.values('username', 'id')), 3600)
 
-@shared_task
+@shared_task(name='questions.tasks.send_new_answer_email')
 def send_new_answer_email(question_title, author_email, question_url):
     send_mail(
         f"Новый ответ: {question_title}",
@@ -30,8 +30,12 @@ def send_new_answer_email(question_title, author_email, question_url):
         [author_email]
     )
 
-@shared_task
-def notify_centrifugo(channel, data):
+@shared_task(name='questions.tasks.notify_centrifugo')
+def notify_centrifugo(question_id, data):
+    channel = f"public:question_{question_id}" 
     command = {"method": "publish", "params": {"channel": channel, "data": data}}
-    headers = {'Authorization': f'apikey {settings.CENTRIFUGO_API_KEY}'}
-    requests.post(settings.CENTRIFUGO_API_URL, json=command, headers=headers)
+    headers = {
+        'Content-type': 'application/json',
+        'Authorization': f'apikey {settings.CENTRIFUGO_API_KEY}'
+    }
+    requests.post("http://centrifugo:8000/api", json=command, headers=headers)

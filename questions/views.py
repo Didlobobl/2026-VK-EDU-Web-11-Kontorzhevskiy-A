@@ -177,14 +177,18 @@ def mark_correct(request):
     return JsonResponse({'status': 'ok'})
 
 def search_suggestions(request):
-    query_text = request.GET.get('q', '')
-    if len(query_text) < 3:
+    query_text = request.GET.get('q', '').strip()
+    
+    if len(query_text) < 2:
         return JsonResponse({'suggestions': []})
 
+    query = SearchQuery(f"{query_text}:*", search_type='raw')
+    
     vector = SearchVector('title', weight='A') + SearchVector('text', weight='B')
-    query = SearchQuery(query_text)
     
-    results = Question.objects.annotate(search=vector).filter(search=query)[:5]
+    results = Question.objects.annotate(
+        search=vector
+    ).filter(search=query).order_by('-created_at')[:5]
+
     suggestions = [{'id': q.id, 'title': q.title} for q in results]
-    
     return JsonResponse({'suggestions': suggestions})

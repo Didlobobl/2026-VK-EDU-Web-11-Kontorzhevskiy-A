@@ -10,46 +10,6 @@
     <link rel="shortcut icon" href="{% static 'questions/img/favicon.ico' %}" type="image/x-icon">
 </head>
 
-<script>
-    function debounce(func, timeout = 300){
-      let timer;
-      return (...args) => {
-        clearTimeout(timer);
-        timer = setTimeout(() => { func.apply(this, args); }, timeout);
-      };
-    }
-
-    const searchInput = document.getElementById('search-input');
-    const resultsBox = document.getElementById('search-results');
-
-    searchInput.addEventListener('input', debounce((e) => {
-        const query = e.target.value;
-        if (query.length < 3) {
-            resultsBox.style.display = 'none';
-            return;
-        }
-        fetch(`/search/suggestions/?q=${query}`)
-            .then(res => res.json())
-            .then(data => {
-                resultsBox.innerHTML = '';
-                if (data.suggestions.length > 0) {
-                    data.suggestions.forEach(item => {
-                        resultsBox.innerHTML += `<a href="/question/${item.id}/" class="list-group-item list-group-item-action py-2">${item.title}</a>`;
-                    });
-                    resultsBox.style.display = 'block';
-                } else {
-                    resultsBox.style.display = 'none';
-                }
-            });
-    }, 400));
-
-    document.addEventListener('click', (e) => {
-        if (!searchInput.contains(e.target) && !resultsBox.contains(e.target)) {
-            resultsBox.style.display = 'none';
-        }
-    });
-</script>
-
 <body class="d-flex flex-column h-100 bg-light">
 
     <header class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top mb-4">
@@ -167,6 +127,59 @@
     const VOTE_URL = "{% url 'questions:vote' %}";
     const MARK_CORRECT_URL = "{% url 'questions:mark_correct' %}";
     const CSRF_TOKEN = "{{ csrf_token }}";
+
+     function debounce(func, timeout = 300){
+      let timer;
+      return (...args) => {
+        clearTimeout(timer);
+        timer = setTimeout(() => { func.apply(this, args); }, timeout);
+      };
+    }
+
+    const searchInput = document.getElementById('search-input');
+    const resultsBox = document.getElementById('search-results');
+
+    if (searchInput && resultsBox) {
+        const sendSearch = debounce((query) => {
+            if (query.length < 2) {
+                resultsBox.style.display = 'none';
+                return;
+            }
+
+            console.log("Отправляю запрос для:", query); // ОТЛАДКА
+
+            fetch(`/search/suggestions/?q=${encodeURIComponent(query)}`)
+                .then(res => res.json())
+                .then(data => {
+                    console.log("Получены данные:", data); // ОТЛАДКА
+                    
+                    resultsBox.innerHTML = '';
+                    
+                    if (data.suggestions && data.suggestions.length > 0) {
+                        data.suggestions.forEach(item => {
+                            // Создаем элемент списка
+                            const link = document.createElement('a');
+                            link.href = `/question/${item.id}/`;
+                            link.className = 'list-group-item list-group-item-action py-2';
+                            link.textContent = item.title;
+                            resultsBox.appendChild(link);
+                        });
+                        resultsBox.style.display = 'block';
+                    } else {
+                        resultsBox.style.display = 'none';
+                    }
+                })
+                .catch(err => console.error("Ошибка поиска:", err));
+        }, 400);
+
+        searchInput.addEventListener('input', (e) => sendSearch(e.target.value));
+
+        document.addEventListener('click', (e) => {
+            if (!searchInput.contains(e.target) && !resultsBox.contains(e.target)) {
+                resultsBox.style.display = 'none';
+            }
+        });
+    }
 
 </script>
 </body>
