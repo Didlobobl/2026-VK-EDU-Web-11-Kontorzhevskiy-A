@@ -7,6 +7,16 @@ from django.views.decorators.http import require_POST
 from .models import Question, Tag, Answer, QuestionLike, AnswerLike
 from questions.utils import paginate
 from .forms import AskForm, AnswerForm
+import jwt
+import time
+from django.conf import settings
+from django.contrib.postgres.search import SearchVector, SearchQuery
+from django.http import JsonResponse
+from .tasks import send_new_answer_email, notify_centrifugo
+
+def get_centrifugo_token(user_id):
+    claims = {"sub": str(user_id), "exp": int(time.time()) + 24 * 3600}
+    return jwt.encode(claims, settings.CENTRIFUGO_SECRET, algorithm="HS256")
 
 def index(request):
     questions_list = Question.objects.new_questions().select_related('author__profile').prefetch_related('tags')
@@ -27,25 +37,41 @@ def tag(request, tag_name):
         'tag': tag_obj, 
         'questions': page_obj
     })
+
 def question(request, question_id):
     item = get_object_or_404(Question.objects.select_related('author'), pk=question_id)
     if request.method == 'POST':
         form = AnswerForm(request.POST)
         if form.is_valid():
-            answer = form.save(commit=False)
-            answer.author = request.user
-            answer.question = item
-            answer.save()
-            return redirect(f"{reverse('questions:question', args=[item.id])}#answer-{answer.id}")
+            ans = form.save(commit=False)
+            ans.author = request.user
+            ans.question = item
+            ans.save()
+            
+            q_url = request.build_absolute_uri(reverse('questions:question', args=[item.id]))
+            send_new_answer_email.delay(item.title, item.author.email, q_url)
+            
+            notify_centrifugo.delay(f"public:question_{item.id}", {
+                "id": ans.id,
+                "author": ans.author.username,
+                "text": ans.text
+            })
+
+            return redirect(f"{reverse('questions:question', args=[item.id])}#answer-{ans.id}")
     else:
         form = AnswerForm()
 
     answers_list = item.answers.select_related('author__profile').order_by('-created_at')
     page_obj = paginate(answers_list, request, 30)
+    
+    ws_token = get_centrifugo_token(request.user.id) if request.user.is_authenticated else ""
+
     return render(request, 'questions/question.html', {
         'question': item, 
         'answers': page_obj,
-        'form': form  
+        'form': form,
+        'ws_token': ws_token,
+        'centrifugo_url': settings.CENTRIFUGO_WS_URL
     })
 
 def ask(request):
@@ -149,3 +175,16 @@ def mark_correct(request):
     answer.save()
 
     return JsonResponse({'status': 'ok'})
+
+def search_suggestions(request):
+    query_text = request.GET.get('q', '')
+    if len(query_text) < 3:
+        return JsonResponse({'suggestions': []})
+
+    vector = SearchVector('title', weight='A') + SearchVector('text', weight='B')
+    query = SearchQuery(query_text)
+    
+    results = Question.objects.annotate(search=vector).filter(search=query)[:5]
+    suggestions = [{'id': q.id, 'title': q.title} for q in results]
+    
+    return JsonResponse({'suggestions': suggestions})
