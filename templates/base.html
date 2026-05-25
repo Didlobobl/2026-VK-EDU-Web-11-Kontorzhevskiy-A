@@ -9,16 +9,58 @@
     <link rel="stylesheet" href="{% static 'questions/css/style.css' %}">
     <link rel="shortcut icon" href="{% static 'questions/img/favicon.ico' %}" type="image/x-icon">
 </head>
+
+<script>
+    function debounce(func, timeout = 300){
+      let timer;
+      return (...args) => {
+        clearTimeout(timer);
+        timer = setTimeout(() => { func.apply(this, args); }, timeout);
+      };
+    }
+
+    const searchInput = document.getElementById('search-input');
+    const resultsBox = document.getElementById('search-results');
+
+    searchInput.addEventListener('input', debounce((e) => {
+        const query = e.target.value;
+        if (query.length < 3) {
+            resultsBox.style.display = 'none';
+            return;
+        }
+        fetch(`/search/suggestions/?q=${query}`)
+            .then(res => res.json())
+            .then(data => {
+                resultsBox.innerHTML = '';
+                if (data.suggestions.length > 0) {
+                    data.suggestions.forEach(item => {
+                        resultsBox.innerHTML += `<a href="/question/${item.id}/" class="list-group-item list-group-item-action py-2">${item.title}</a>`;
+                    });
+                    resultsBox.style.display = 'block';
+                } else {
+                    resultsBox.style.display = 'none';
+                }
+            });
+    }, 400));
+
+    document.addEventListener('click', (e) => {
+        if (!searchInput.contains(e.target) && !resultsBox.contains(e.target)) {
+            resultsBox.style.display = 'none';
+        }
+    });
+</script>
+
 <body class="d-flex flex-column h-100 bg-light">
 
     <header class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top mb-4">
         <div class="container">
             <a class="navbar-brand fw-bold" href="{% url 'questions:index' %}">AskPupkin</a>
             <div class="collapse navbar-collapse" id="navbarContent">
-                <form class="d-flex mx-auto w-50">
-                    <input name = "search" class="form-control me-2" type="search" placeholder="Поиск...">
-                    <button class="btn btn-outline-success" type="submit">Найти</button>
-                </form>
+                <div class="position-relative mx-auto w-50">
+                    <input id="search-input" class="form-control me-2" type="search" placeholder="Поиск вопроса...">
+                    <div id="search-results" class="list-group position-absolute w-100 shadow-sm" style="display: none; z-index: 1050; top: 100%;">
+                    </div>
+                </div>
 
                 <div class="d-flex align-items-center text-white">
                     {% if user.is_authenticated %}
