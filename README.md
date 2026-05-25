@@ -10,6 +10,11 @@
 *   **Инструменты отладки:** Django Debug Toolbar (мониторинг SQL-запросов и N+1)
 *   **Генерация данных:** Faker (наполнение базы миллионами записей)
 *   **Frontend Logic:** jQuery 3.7.1
+*   **Очереди задач:** Celery + Celery Beat
+*   **Брокер и Кэш:** Redis (разделение по БД: 0 — кэш, 1 — брокер, 2 — расписание)
+*   **Real-time:** Centrifugo (WebSockets)
+*   **Email:** Maildev (локальный SMTP-сервер)
+*   **Поиск:** Full-text search (FTS) PostgreSQL
 
 ## Работа с окружением и СУБД
 В проекте реализована гибкая настройка через переменные окружения. Для корректной работы Docker Compose и устранения предупреждений о пустых переменных используется файл `.env.docker`.
@@ -26,7 +31,7 @@ git clone <ссылка_на_ваш_репозиторий>
 cd 2026-VK-EDU-Web-11-Kontorzhevskiy-A
 cp .env.example .env.docker
 ```
-Убедитесь, что внутри .env.docker параметр DB_HOST установлен в значение db.
+Убедитесь, что внутри .env.docker параметр DB_HOST установлен в значение db, а также содержит настройки для Redis и Centrifugo.
 
 ### 2. Запуск через Docker Compose
 
