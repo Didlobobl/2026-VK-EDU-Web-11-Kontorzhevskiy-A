@@ -8,10 +8,8 @@ def paginate(objects_list, request, per_page=10):
     try:
         page = paginator.page(page_num)
     except PageNotAnInteger:
-        # Если номер страницы не число — отдаем первую
         page = paginator.page(1)
     except EmptyPage:
-        # Если номер страницы слишком велик — отдаем последнюю
         page = paginator.page(paginator.num_pages)
         
     return page

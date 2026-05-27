@@ -2,27 +2,61 @@
 <div class="card mb-4 shadow-sm">
     <div class="card-body">
         <div class="row">
-            <div class="col-md-2 text-center border-end">
-                <img src="{% static 'questions/img/avatar-placeholder.png' %}" class="img-fluid rounded mb-2" style="max-width: 64px;">
+            <div class="col-md-2 text-center border-end btn-group-vote">
+                <img src="{% if question.author.profile.avatar %}{{ question.author.profile.avatar.url }}{% else %}{% static 'questions/img/avatar-placeholder.png' %}{% endif %}" 
+                     class="img-fluid rounded mb-2 shadow-sm" 
+                     style="max-width: 64px; height: 64px; object-fit: cover;">
+                
                 <div class="d-flex flex-column align-items-center">
-                    <button class="btn btn-outline-success btn-sm">+</button>
-                    <span class="fw-bold">{{ question.likes.count }}</span>
-                    <button class="btn btn-outline-danger btn-sm">-</button>
+                    <button class="btn btn-outline-success btn-sm like-btn mb-1" 
+                            data-id="{{ question.id }}" 
+                            data-type="question" 
+                            data-action="like"
+                            {% if not user.is_authenticated %}disabled title="Войдите, чтобы голосовать"{% endif %}>+</button>
+                    
+                    <span class="fw-bold rating-counter" id="rating-question-{{ question.id }}">
+                        {{ question.rating|default:0 }}
+                    </span>
+                    
+                    <button class="btn btn-outline-danger btn-sm dislike-btn mt-1" 
+                            data-id="{{ question.id }}" 
+                            data-type="question" 
+                            data-action="dislike"
+                            {% if not user.is_authenticated %}disabled title="Войдите, чтобы голосовать"{% endif %}>-</button>
                 </div>
             </div>
+
             <div class="col-md-10">
-                <h4><a href="{% url 'questions:question' question_id=question.id %}" class="text-decoration-none">{{ question.title }}</a></h4>
-                <p class="card-text">{{ question.content|truncatechars:150 }}</p>
-                <div class="d-flex justify-content-between mt-3">
+                <h4 class="card-title">
+                    <a href="{% url 'questions:question' question_id=question.id %}" class="text-decoration-none">
+                        {{ question.title }}
+                    </a>
+                </h4>
+                <p class="card-text text-muted">{{ question.text|truncatechars:150 }}</p>
+                
+                <div class="d-flex justify-content-between align-items-end mt-3">
+                    <!-- Теги и ответы -->
                     <div>
-                        {% for tag in question.tags.all %}
-                            <a href="{% url 'questions:tag' tag_name=tag.name %}" class="badge bg-info text-dark">
-                                {{ tag.name }}
-                            </a>
-                        {% endfor %}
+                        <div class="mb-2">
+                            {% for tag in question.tags.all %}
+                                <a href="{% url 'questions:tag' tag_name=tag.name %}" class="badge bg-info text-dark text-decoration-none">
+                                    #{{ tag.name }}
+                                </a>
+                            {% endfor %}
+                        </div>
+                        <a href="{% url 'questions:question' question_id=question.id %}" class="small text-decoration-none">
+                            Ответы ({{ question.answers_count|default:question.answers.count }})
+                        </a>
                     </div>
-                    <div class="small text-muted">
-                        Ответы ({{ question.answers_count }})
+
+                    <div class="text-end">
+                        <div class="small text-muted">
+                            Задан {{ question.created_at|date:"d.m.Y" }}
+                        </div>
+                        <div class="fw-bold small">
+                            <i class="bi bi-person"></i> 
+                            {{ question.author.profile.nickname|default:question.author.username }}
+                        </div>
                     </div>
                 </div>
             </div>

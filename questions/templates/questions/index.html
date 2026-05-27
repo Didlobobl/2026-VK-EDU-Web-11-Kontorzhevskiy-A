@@ -31,5 +31,6 @@
     </div>
 {% endfor %}
 
-    {% include 'questions/components/pagination.html' with page_obj=questions %}
+{% include 'questions/components/pagination.html' with page_obj=questions %}
+
 {% endblock %}

@@ -11,10 +11,11 @@ env/
 Thumbs.db
 db.sqlite3
 *.sqlite3
-media/
-static/  
+/media/
+/static/  
 .env
 .env.local
 .env.docker
 .env.*
+! .env.example
 *.log
