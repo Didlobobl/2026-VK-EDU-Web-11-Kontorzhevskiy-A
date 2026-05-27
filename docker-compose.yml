@@ -65,11 +65,12 @@ services:
   web:
     build: .
     container_name: django_app
-    command: python manage.py runserver 0.0.0.0:8000
+    command: gunicorn -c gunicorn.conf.py application.wsgi:application
     volumes:
       - .:/app
     ports:
       - "8000:8000"
+      - "8081:8081"
     env_file:
       - .env.docker   
     depends_on:
