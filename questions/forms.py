@@ -11,6 +11,9 @@ class AskForm(forms.ModelForm):
     def clean_tag_string(self):
         tags = self.cleaned_data.get('tag_string', '')
         tag_list = [t.strip() for t in tags.split(',') if t.strip()]
+        for tag in tag_list:
+            if len(tag) > 50:
+                raise forms.ValidationError(f"Тег '{tag}' слишком длинный (макс 50 символов).")
         if len(tag_list) > 3:
             raise forms.ValidationError("Нельзя указать больше 3 тегов.")
         return tag_list
@@ -27,6 +30,13 @@ class AskForm(forms.ModelForm):
         return question
 
 class AnswerForm(forms.ModelForm):
-    class Meta:
+   class Meta:
         model = Answer
         fields = ['text']
+        widgets = {
+            'text': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 5,
+                'placeholder': 'Введите ваш ответ здесь...'
+            })
+        }

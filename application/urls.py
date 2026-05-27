@@ -10,6 +10,8 @@ urlpatterns = [
 ]
 
 handler404 = 'questions.views.page_not_found'
+handler500 = 'questions.views.handler500'
+
 
 if settings.DEBUG:
     import debug_toolbar

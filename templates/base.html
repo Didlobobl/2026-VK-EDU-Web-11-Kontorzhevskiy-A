@@ -9,16 +9,18 @@
     <link rel="stylesheet" href="{% static 'questions/css/style.css' %}">
     <link rel="shortcut icon" href="{% static 'questions/img/favicon.ico' %}" type="image/x-icon">
 </head>
+
 <body class="d-flex flex-column h-100 bg-light">
 
     <header class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top mb-4">
         <div class="container">
             <a class="navbar-brand fw-bold" href="{% url 'questions:index' %}">AskPupkin</a>
             <div class="collapse navbar-collapse" id="navbarContent">
-                <form class="d-flex mx-auto w-50">
-                    <input name = "search" class="form-control me-2" type="search" placeholder="Поиск...">
-                    <button class="btn btn-outline-success" type="submit">Найти</button>
-                </form>
+                <div class="position-relative mx-auto w-50">
+                    <input id="search-input" class="form-control me-2" type="search" placeholder="Поиск вопроса...">
+                    <div id="search-results" class="list-group position-absolute w-100 shadow-sm" style="display: none; z-index: 1050; top: 100%;">
+                    </div>
+                </div>
 
                 <div class="d-flex align-items-center text-white">
                     {% if user.is_authenticated %}
@@ -92,5 +94,93 @@
     </footer>
 
     <script src="{% static 'questions/js/bootstrap.bundle.min.js' %}"></script>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <script src="{% static 'questions/js/ajax.js' %}"></script>
+    
+    <script>
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    const csrftoken = getCookie('csrftoken');
+
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+
+    const VOTE_URL = "{% url 'questions:vote' %}";
+    const MARK_CORRECT_URL = "{% url 'questions:mark_correct' %}";
+    const CSRF_TOKEN = "{{ csrf_token }}";
+
+     function debounce(func, timeout = 300){
+      let timer;
+      return (...args) => {
+        clearTimeout(timer);
+        timer = setTimeout(() => { func.apply(this, args); }, timeout);
+      };
+    }
+
+    const searchInput = document.getElementById('search-input');
+    const resultsBox = document.getElementById('search-results');
+
+    if (searchInput && resultsBox) {
+        const sendSearch = debounce((query) => {
+            if (query.length < 2) {
+                resultsBox.style.display = 'none';
+                return;
+            }
+
+            console.log("Отправляю запрос для:", query); // ОТЛАДКА
+
+            fetch(`/search/suggestions/?q=${encodeURIComponent(query)}`)
+                .then(res => res.json())
+                .then(data => {
+                    console.log("Получены данные:", data); // ОТЛАДКА
+                    
+                    resultsBox.innerHTML = '';
+                    
+                    if (data.suggestions && data.suggestions.length > 0) {
+                        data.suggestions.forEach(item => {
+                            // Создаем элемент списка
+                            const link = document.createElement('a');
+                            link.href = `/question/${item.id}/`;
+                            link.className = 'list-group-item list-group-item-action py-2';
+                            link.textContent = item.title;
+                            resultsBox.appendChild(link);
+                        });
+                        resultsBox.style.display = 'block';
+                    } else {
+                        resultsBox.style.display = 'none';
+                    }
+                })
+                .catch(err => console.error("Ошибка поиска:", err));
+        }, 400);
+
+        searchInput.addEventListener('input', (e) => sendSearch(e.target.value));
+
+        document.addEventListener('click', (e) => {
+            if (!searchInput.contains(e.target) && !resultsBox.contains(e.target)) {
+                resultsBox.style.display = 'none';
+            }
+        });
+    }
+
+</script>
 </body>
 </html>
