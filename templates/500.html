@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}500 — Ошибка сервера — AskPupkin{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center align-items-center" style="min-height: 60vh;">
+        <div class="col-md-8 text-center">
+            <div class="display-1 fw-bold text-danger mb-4">500</div>
+            <h1 class="h2 mb-3">Внутренняя ошибка сервера</h1>
+            <p class="lead text-muted mb-5">
+                Упс! Что-то пошло не так на нашей стороне. 
+                Мы уже в курсе проблемы и наши лучшие программисты 
+                пытаются всё починить.
+            </p>
+            
+            <div class="d-flex justify-content-center gap-3">
+                <a href="{% url 'questions:index' %}" class="btn btn-primary px-4">
+                    На главную
+                </a>
+                <button onclick="location.reload()" class="btn btn-outline-secondary px-4">
+                    Попробовать еще раз
+                </a>
+            </div>
+            
+            <div class="mt-5">
+                <img src="{% static 'questions/img/avatar-placeholder.png' %}" 
+                     alt="Error" class="opacity-25" style="width: 100px; filter: grayscale(1);">
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

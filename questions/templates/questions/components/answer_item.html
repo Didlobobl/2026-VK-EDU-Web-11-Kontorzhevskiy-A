@@ -1,39 +1,46 @@
 {% load static %}
-<div class="card mb-3 {% if answer.is_correct %}border-start border-success border-4 shadow-sm{% endif %}" id="answer-{{ answer.id }}">
+<div class="card mb-3 js-answer-card {% if answer.is_correct %}border-start border-success border-4 shadow-sm{% endif %}" id="answer-{{ answer.id }}">
     <div class="card-body">
         <div class="row">
             <div class="col-md-2 text-center">
-                {# Аватар автора ответа из его профиля #}
                 <img src="{% if answer.author.profile.avatar %}{{ answer.author.profile.avatar.url }}{% else %}{% static 'questions/img/avatar-placeholder.png' %}{% endif %}"
                      alt="Avatar" class="img-fluid rounded mb-1" style="max-width: 50px; height: 50px; object-fit: cover;">
                 
-                {# Никнейм автора ответа (если пуст — логин) #}
                 <div class="small fw-bold">
                     {{ answer.author.profile.nickname|default:answer.author.username }}
                 </div>
                 
-                <div class="small text-muted">Рейтинг: {{ answer.rating|default:0 }}</div>
+                <div class="small text-muted">
+                    Рейтинг: <span class="rating-counter" id="rating-answer-{{ answer.id }}">{{ answer.get_rating }}</span>
+                </div>
 
-                {# Виджет лайков для ответа #}
-                <div class="mt-1">
+                <div class="mt-1 btn-group-vote">
                     <button class="btn btn-sm btn-outline-success like-btn" 
-                            data-id="{{ answer.id }}" data-type="answer"
+                            data-id="{{ answer.id }}" data-type="answer" data-action="like"
                             {% if not user.is_authenticated %}disabled title="Войдите, чтобы голосовать"{% endif %}>+</button>
                     <button class="btn btn-sm btn-outline-danger dislike-btn" 
-                            data-id="{{ answer.id }}" data-type="answer"
+                            data-id="{{ answer.id }}" data-type="answer" data-action="dislike"
                             {% if not user.is_authenticated %}disabled title="Войдите, чтобы голосовать"{% endif %}>-</button>
                 </div>
             </div>
             
             <div class="col-md-10 border-start">
                 <p>{{ answer.text|linebreaksbr }}</p>
+
+                {% if request.user == question.author %}
+                        <div class="form-check">
+                            <input class="form-check-input correct-checkbox" type="checkbox" 
+                                   data-id="{{ answer.id }}"
+                                   id="correct{{ answer.id }}"
+                                   {% if answer.is_correct %}checked{% endif %}>
+                            <label class="form-check-label text-success fw-bold" for="correct{{ answer.id }}">
+                                Правильный ответ
+                            </label>
+                        </div>
                 
-                {% if answer.is_correct %}
-                    <div class="form-check mt-2">
-                        <input class="form-check-input" type="checkbox" checked disabled id="correct{{ answer.id }}">
-                        <label class="form-check-label text-success fw-bold" for="correct{{ answer.id }}">
-                            <i class="bi bi-check-circle-fill"></i> Правильный ответ!
-                        </label>
+                {% elif answer.is_correct %}
+                     <div class="text-success fw-bold">
+                        <i class="bi bi-check-circle-fill"></i> 
                     </div>
                 {% endif %}
                 

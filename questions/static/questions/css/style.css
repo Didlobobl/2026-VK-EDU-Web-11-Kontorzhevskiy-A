@@ -35,3 +35,13 @@
     object-fit: cover;
     display: block;
 }
+
+.like-btn.active {
+    background-color: #198754 !important; 
+    color: white !important;
+}
+
+.dislike-btn.active {
+    background-color: #dc3545 !important; 
+    color: white !important;
+}

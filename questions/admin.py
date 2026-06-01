@@ -17,7 +17,6 @@ class AnswerAdmin(admin.ModelAdmin):
     list_display = ('question', 'author', 'is_correct', 'created_at')
     list_filter = ('is_correct',)
 
-# Остальные модели регистрируем просто
 admin.site.register(Tag)
 admin.site.register(QuestionLike)
 admin.site.register(AnswerLike)
